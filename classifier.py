@@ -53,17 +53,32 @@ class NaiveBayesClassifier(object):
             word_vec[word_id-1] = word_histogram[word_id]
         return word_vec
 
-    def load_models(self):
-        self.MLE_vec = np.loadtxt(self.DEFAULT_MLE_FILENAME)
-        self.MAP_matrix = \
-          np.loadtxt(self.DEFAULT_MAP_FILENAME)
+    def load_models(self,
+                    mle_file=DEFAULT_MLE_FILENAME,
+                    map_file=DEFAULT_MAP_FILENAME):
+        """Loads models from saved file."""
+        self.MLE_vec = np.loadtxt(mle_file)
+        self.MAP_matrix = np.loadtxt(map_file)
         
-    def classify(self, word_vector):
+    def classify(self, word_vector, mle_vec, map_matrix):
+        #################################################
+        #################################################
+        # Current implementation is WRONG
+        # We need to produce a vector of predictions,
+        # where the vector's index represents the
+        # test document's ID.
+        #------------------------------------------------
+        # The error is with word_vector.
+        # Currently word_vector is a count for all dataarray
+        # But it should be a count for only a single doc.
+        #################################################
+        #################################################
         """Classifies a given document based only on
         its word histogram."""
         #Y_prediction =
         #  argmax( log2(P(Y_k)) +
         #          sum_i(# of X_i) * log2(P(X_i|Y_k)) ).
-        
-        
-        return
+        d = word_vector + mle_vec.times(map_matrix)
+        predicted_newsgroup_id = d.argmax(d)+1
+        return predicted_newsgroup_id
+
