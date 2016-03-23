@@ -5,11 +5,11 @@
 CC=python3
 
 all:
-	$(CC) test_trainer.py
+	#$(CC) test_trainer.py
 
 test:
-	time $(CC) test_trainer.py
-	#time $(CC) test_classifier.py
+	#time $(CC) test_trainer.py
+	time $(CC) test_classifier.py
 
 clean:
 	rm -f *~
