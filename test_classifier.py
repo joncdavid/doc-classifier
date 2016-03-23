@@ -5,32 +5,29 @@ from classifier import *
 
 DEFAULT_TEST_PATH = "./test_output/"
 
-def test_populate_word_histogram():
-    print("\tTesting populate_word_histogram()...")
+def test_const_word_histograms():
+    print("\tTesting const_word_histograms()...")
     c = NaiveBayesClassifier()
-    word_hist = c.populate_word_histogram()
+    doc_word_dict = c.const_word_histograms()
 
-    fname = DEFAULT_TEST_PATH + "test_pop_word_hist.txt"
+    fname = DEFAULT_TEST_PATH + "test_const_word_hist.txt"
     test_f = open(fname, 'w')
-    print_str = "{}, \nlen:{}"
-    print(print_str.format(word_hist,
-                           len(word_hist)),
+    pstr = "{}, \nlen:{}"
+    print(pstr.format(doc_word_dict,
+                      map(len,doc_word_dict.values())),
           file=test_f)
     
-def test_const_word_vector():
+def test_const_word_vectors():
     print("\tTesting const_word_vector()...")
     c = NaiveBayesClassifier()
-    word_hist = c.populate_word_histogram()
-    word_vec = c.const_word_vector(word_hist)
+    doc_word_dict = c.const_word_histograms()
+    doc_word_vec_dict = c.const_word_vectors(doc_word_dict)
     
     fname = DEFAULT_TEST_PATH + "test_const_word_vec.txt"
     test_f = open(fname, 'w')
-    print_str = "{}, \nshape:{}, min:{}, max:{}, len:{}"
-    print(print_str.format(word_vec,
-                           word_vec.shape,
-                           word_vec.min(),
-                           word_vec.max(),
-                           len(word_vec)),
+    print_str = "{}, \nlen:{}"
+    print(print_str.format(doc_word_vec_dict,
+                           len(doc_word_vec_dict)),
           file=test_f)
 
 def test_load_models():
@@ -47,10 +44,17 @@ def test_load_models():
 def test_classify():
     print("\tTesting classify()...")
     c = NaiveBayesClassifier()
-    c.classify()
+    doc_word_dict = c.const_word_histograms()
+    doc_word_vec_dict = c.const_word_vectors(doc_word_dict)
+    predictions = c.classify(doc_word_vec_dict, c.MLE_vec, c.MAP_matrix)
+
+    fname = DEFAULT_TEST_PATH + "test_classify.txt"
+    test_f = open(fname, 'w')
+    for prediction in predictions.tolist():
+        print(prediction, file=test_f)
             
 ##==-- Main --==##
-test_populate_word_histogram()
-test_const_word_vector()
+test_const_word_histograms()
+test_const_word_vectors()
 test_load_models()
 test_classify()

@@ -113,8 +113,3 @@ class Trainer:
         """Saves model in savefilename."""
         np.savetxt(mlefilename, MLE_vector)
         np.savetxt(mapfilename, MAP_matrix)
-
-    #note: create separate class called classifier
-    #class NBClassifier:
-    #  def classify(self, X_new):
-    #    return argmax(log(MLE_vec) + X_new*MAP_matrix)
