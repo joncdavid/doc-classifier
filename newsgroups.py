@@ -35,6 +35,6 @@ class NewsGroups:
         """Returns the newsgroup_id associated with newsgroup."""
         return self.group_to_id_dict[newsgroup]
 
-    def get_newsgroup(self, nwqagroup_id):
+    def get_newsgroup(self, newsgroup_id):
         """Returns the group associated with newsgroup_id."""
         return self.id_to_group_dict[newsgroup_id]
