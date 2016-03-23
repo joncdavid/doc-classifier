@@ -2,7 +2,8 @@
 # filename: newsgroups.py
 # authors: Jon David and Jarrett Decker
 # description:
-#   Loads Newsgroups from file
+#   Loads Newsgroups from file.
+#   Note: NewsGroup_ID's begin at 1.
 #
 
 class NewsGroups:
