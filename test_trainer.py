@@ -3,10 +3,11 @@
 # authors: Jon David and Jarrett Decker
 from training import Trainer
 
-DEFAULT_TEST_PATH = "./test_output/test_trainer/"
+DEFAULT_TEST_PATH = "./test_output/"
 
 def test_getdata():
     """Tests the Trainer.getdata function."""
+    print("\tTesting Trainer.getdata()...")
     filename = DEFAULT_TEST_PATH + "test_getdata.txt"
     test_file = open(filename, "w")
     test_trainer = Trainer()
@@ -26,6 +27,7 @@ def test_getdata():
 
 def test_calc_vector_MLE():
     """Tests the Trainer.calc_vector_MLE function."""
+    print("\tTesting Trainer.calc_vector_MLE()...")
     t = Trainer()
     t.getdata()
     MLE_vec = t.calc_vector_MLE()
@@ -37,6 +39,7 @@ def test_calc_vector_MLE():
 
 def test_calc_matrix_MAP():
     """Tests the Trainer.calc_matrix_MAP function."""
+    print("\tTesting Trainer.calc_matrix_MAP()...")
     t = Trainer()
     t.getdata()
     MAP_matrix = t.calc_matrix_MAP()
@@ -51,7 +54,22 @@ def test_calc_matrix_MAP():
 
     test_f.close()
 
+def test_train():
+    print("\tTesting Trainer.train()...")
+    t = Trainer()
+    t.train()
+    MLE_vec, MAP_matrix = t.generate_model()
+
+    fname = DEFAULT_TEST_PATH + "test_generate_model.txt"
+    test_f = open(fname, "w")
+
+    mle_f = open(t.DEFAULT_MLE_FILENAME, 'r')
+    map_f = open(t.DEFAULT_MAP_FILENAME, 'r')
+    print("MLE:{} \nMAP:{}".format(mle_f, map_f),
+          file=test_f)
+    
 ##==-- Main --==##
-#test_getdata()
-#test_calc_vector_MLE()
+test_getdata()
+test_calc_vector_MLE()
 test_calc_matrix_MAP()
+test_train()

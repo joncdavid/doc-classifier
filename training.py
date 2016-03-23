@@ -14,6 +14,8 @@ import numpy as np
 class Trainer:
     DEFAULT_DATA_FILE = "./data/train.data"
     DEFAULT_LABEL_FILE = "./data/train.label"
+    DEFAULT_MLE_FILENAME = "./models/mle.model"
+    DEFAULT_MAP_FILENAME = "./models/map.model"
 
     def __init__(self, datafile=DEFAULT_DATA_FILE,
                  labelfile=DEFAULT_LABEL_FILE):
@@ -54,11 +56,10 @@ class Trainer:
                 self.dataarray[doc_label_id-1, word_id-1] = word_count
 
     def train(self):
+        """The single function to rule them all."""
         self.getdata()
-        MLE_vec = self.calc_vector_MLE()
-        MAP_matrix = self.calc_matrix_MAP()
-        self.generate_model()
-        self.save_model("bayesclassifier.model")
+        MLE_vec, MAP_matrix = self.generate_model()
+        self.save_model(MLE_vec, MAP_matrix)
 
     def calc_vector_MLE(self):
         """Calculates MLE for P(Y_k),
@@ -102,11 +103,16 @@ class Trainer:
 
     def generate_model(self):
         """Generates model as MLE_vec, and MAP_matrix."""
-        return 0
+        MLE_vec = self.calc_vector_MLE()
+        MAP_matrix = self.calc_matrix_MAP()
+        return MLE_vec, MAP_matrix
 
-    def save_model(self, savefilename):
+    def save_model(self, MLE_vector, MAP_matrix,
+                   mlefilename=DEFAULT_MLE_FILENAME,
+                   mapfilename=DEFAULT_MAP_FILENAME):
         """Saves model in savefilename."""
-        return 0
+        np.savetxt(mlefilename, MLE_vector)
+        np.savetxt(mapfilename, MAP_matrix)
 
     #note: create separate class called classifier
     #class NBClassifier:
