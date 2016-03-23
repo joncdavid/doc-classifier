@@ -28,6 +28,12 @@ class NaiveBayesClassifier(object):
         self.trainer = Trainer(datafile, labelfile)
         self.trainer.getdata()
         self.word_hist = defaultdict(int)
+        self.word_hist = self.populate_word_histogram()
+        self.word_vec = \
+          self.const_word_vector(self.word_hist)
+        self.MLE_vec = None
+        self.MAP_matrix = None
+        self.load_models()
 
     def populate_word_histogram(self):
         """Populates word histogram from dataarray."""
@@ -38,7 +44,7 @@ class NaiveBayesClassifier(object):
             self.word_hist[word_id] += count
         return self.word_hist
 
-    def construct_word_vector(self, word_histogram):
+    def const_word_vector(self, word_histogram):
         """Constructs a vector of word counts, where
         the index represents the word_id."""
         num_words = self.trainer.vocab.size
@@ -46,6 +52,18 @@ class NaiveBayesClassifier(object):
         for word_id in range(1,num_words):
             word_vec[word_id-1] = word_histogram[word_id]
         return word_vec
-            
-    def classify(self, X_new):
+
+    def load_models(self):
+        self.MLE_vec = np.loadtxt(self.DEFAULT_MLE_FILENAME)
+        self.MAP_matrix = \
+          np.loadtxt(self.DEFAULT_MAP_FILENAME)
+        
+    def classify(self, word_vector):
+        """Classifies a given document based only on
+        its word histogram."""
+        #Y_prediction =
+        #  argmax( log2(P(Y_k)) +
+        #          sum_i(# of X_i) * log2(P(X_i|Y_k)) ).
+        
+        
         return

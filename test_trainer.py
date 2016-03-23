@@ -65,9 +65,9 @@ def test_train():
 
     mle_f = open(t.DEFAULT_MLE_FILENAME, 'r')
     map_f = open(t.DEFAULT_MAP_FILENAME, 'r')
-    print("MLE:{} \nMAP:{}".format(mle_f, map_f),
+    print("MLE:{} \n\nMAP:{}".format(mle_f, map_f),
           file=test_f)
-    
+
 ##==-- Main --==##
 test_getdata()
 test_calc_vector_MLE()
