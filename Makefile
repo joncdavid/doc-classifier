@@ -8,7 +8,7 @@ all:
 	#$(CC) test_trainer.py
 
 test:
-	#time $(CC) test_trainer.py
+	time $(CC) test_trainer.py
 	time $(CC) test_classifier.py
 
 clean:

@@ -93,16 +93,18 @@ class NaiveBayesClassifier(object):
         predictions = np.zeros(self.num_docs)
         for doc_id in range(1, self.num_docs+1):
             word_vector = word_vector_dict[doc_id]
-
             a = mle_vec.T
             b = word_vector.T
             c = map_matrix
             #print("a shape:{}".format(a.shape))
             #print("b shape:{}".format(b.shape))
             #print("c shape:{}".format(c.shape))
-            d = a + b.dot(c)
+            #d = a + b.dot(c)
+            a_log2 = np.log2(a)
+            c_log2 = np.log2(c)
+            d = a_log2 + b.dot(c_log2)
             predicted_newsgroup_id = d.argmax()+1
             predictions[doc_id-1] = predicted_newsgroup_id
-            
+
         return predictions
 
