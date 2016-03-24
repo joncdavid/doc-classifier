@@ -86,7 +86,8 @@ class Trainer:
         #  (count of X_i in Y_k) + (alpha-1) /
         #  (total words in Y_k) + ((alpha-1)*|V|)
         
-        beta = 1 * self.vocab.size
+        # beta = 1 * self.vocab.size
+        beta = float(1 / self.vocab.size)
         alpha = 1 + beta
         gamma = alpha - 1
         map_matrix = np.zeros((self.vocab.size,
