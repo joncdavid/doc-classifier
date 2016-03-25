@@ -5,25 +5,25 @@ from training import Trainer
 
 DEFAULT_TEST_PATH = "./test_output/"
 
-def test_getdata():
-    """Tests the Trainer.getdata function."""
-    print("\tTesting Trainer.getdata()...")
-    filename = DEFAULT_TEST_PATH + "test_getdata.txt"
-    test_file = open(filename, "w")
-    test_trainer = Trainer()
-    test_trainer.getlabels()
-
-    for x in range (1, 100, 10):
-        print(test_trainer.labeldict[x],
-              file=test_file)
-    
-    test_trainer.getdata()
-
-    for x in range (0, 100, 20):
-        for y in range(0, 9):
-            print(test_trainer.dataarray[y, x],
-                  file=test_file)
-    test_file.close()
+#def test_getdata():
+#    """Tests the Trainer.getdata function."""
+#    print("\tTesting Trainer.getdata()...")
+#    filename = DEFAULT_TEST_PATH + "test_getdata.txt"
+#    test_file = open(filename, "w")
+#    test_trainer = Trainer()
+#    test_trainer.getlabels()#
+#
+#    for x in range (1, 100, 10):
+#        print(test_trainer.labeldict[x],
+#              file=test_file)
+#    
+#    test_trainer.getdata()
+#
+#    for x in range (0, 100, 20):
+#        for y in range(0, 9):
+#            print(test_trainer.dataarray[y, x],
+#                  file=test_file)
+#    test_file.close()
 
 def test_calc_vector_MLE():
     """Tests the Trainer.calc_vector_MLE function."""

@@ -123,13 +123,11 @@ class Trainer:
             
         map_matrix = np.zeros((self.vocab.size,
                                self.newsgroups.size))
-        for ng_id in range(1, self.newsgroups.size+1):
-            total_words = sum(self.dataarray[ng_id-1,:])
-            for word_id in range(1, self.vocab.size+1):
-                count = self.dataarray[ng_id-1, word_id-1]
-                P = float(count+gamma) /  \
-                    (total_words + gamma*self.vocab.size)
-                map_matrix[word_id-1, ng_id-1] = P
+        for i in range(0, self.vocab.size):
+            for j in range(0, self.newsgroups.size):
+                map_matrix[i,j] = \
+                  ( input_matrix[i,j] + gamma ) / \
+                  ( total_words[j] + (gamma*self.vocab.size) )
 
         return map_matrix
 
