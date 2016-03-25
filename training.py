@@ -30,6 +30,10 @@ class Trainer:
         newsgroupssize = self.newsgroups.size
         self.dataarray = np.zeros((newsgroupssize, vocabsize), dtype=int)
         self.labeldict = defaultdict()
+        for i in range(1,21):
+            self.labeldict[i] = 0
+
+
 
     def getlabels(self):
         """Reads labels file and stores in labeldict."""
@@ -52,9 +56,8 @@ class Trainer:
                 
                 doc_label_id = int(self.labeldict[doc_id])
                 self.num_docs += 1
-                self.label_hist[doc_label_id] += 1                
+                self.label_hist[doc_label_id] += 1
                 self.dataarray[doc_label_id-1, word_id-1] = word_count
-
     def train(self):
         """The single function to rule them all."""
         self.getdata()
@@ -68,12 +71,22 @@ class Trainer:
         #P(Y_k) = (# of docs labeled Y_k) /
         #         (total # of docs)
         #D: why couldn't the input indices start with 0...
+        # mle_vec = np.zeros(self.newsgroups.size)
+        # for ng_id in range(1, self.newsgroups.size+1):
+        #     mle_vec[ng_id-1] = self.label_hist[ng_id]
+        # total_doc_count = sum(self.label_hist.values())
+        # mle_vec = mle_vec / total_doc_count
+        # return mle_vec
+
         mle_vec = np.zeros(self.newsgroups.size)
-        for ng_id in range(1, self.newsgroups.size+1):
-            mle_vec[ng_id-1] = self.label_hist[ng_id]
-        total_doc_count = sum(label_hist.values())
-        mle_vec = float(mle_vec) / total_doc_count
+        with open(self.labelfile, 'r') as labelf:
+            for line in labelf:
+                label = line.strip().lower()
+                mle_vec[int(label)-1] += 1
+        mle_vec = mle_vec / sum(mle_vec)
         return mle_vec
+
+
 
     def calc_matrix_MAP(self):
         """Calculates P(X_i|Y_k),
@@ -94,10 +107,10 @@ class Trainer:
             total_words = sum(self.dataarray[ng_id-1,:])
             for word_id in range(1, self.vocab.size+1):
                 count = self.dataarray[ng_id-1, word_id-1]
-                P = float(count+gamma) / \
-                    (total_words + gamma*self.vocab.size)
+                P = float(count+gamma) /  \
+                    total_words + gamma*self.vocab.size
                 map_matrix[word_id-1, ng_id-1] = P
-                
+
         return map_matrix
 
     def generate_model(self):
