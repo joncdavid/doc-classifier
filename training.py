@@ -17,7 +17,8 @@ class Trainer:
     DEFAULT_MLE_FILENAME = "./models/mle.model"
     DEFAULT_MAP_FILENAME = "./models/map.model"
 
-    def __init__(self, datafile=DEFAULT_DATA_FILE,
+    def __init__(self,
+                 datafile=DEFAULT_DATA_FILE,
                  labelfile=DEFAULT_LABEL_FILE):
         self.datafile = datafile
         self.labelfile = labelfile
@@ -131,10 +132,10 @@ class Trainer:
 
         return map_matrix
 
-    def generate_model(self):
+    def generate_model(self, betavalue=None):
         """Generates model as MLE_vec, and MAP_matrix."""
         MLE_vec = self.calc_vector_MLE()
-        MAP_matrix = self.calc_matrix_MAP()
+        MAP_matrix = self.calc_matrix_MAP(betavalue)
         return MLE_vec, MAP_matrix
 
     def save_model(self, MLE_vector, MAP_matrix,

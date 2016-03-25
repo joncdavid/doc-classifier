@@ -81,8 +81,16 @@ class NaiveBayesClassifier(object):
         """Loads models from saved file."""
         self.MLE_vec = np.loadtxt(mle_file)
         self.MAP_matrix = np.loadtxt(map_file)
+
+    def classify(self, mlemodelfile, mapmodelfile):
+        self.load_models(mlemodelfile, mapmodelfile)
+        mle_vec = self.MLE_vec
+        map_matrix = self.MAP_matrix
+        word_hist = self.const_word_histograms()
+        word_vec_dict = self.const_word_vectors(word_hist)
+        self._classify(word_vec_dict, mle_vec, map_matrix)
         
-    def classify(self, word_vector_dict, mle_vec, map_matrix):
+    def _classify(self, word_vector_dict, mle_vec, map_matrix):
         """Classifies documents based only on models, and the
         its input word histograms. Returns an array of
         predicted labels (i.e., NewsGroupIDs)"""

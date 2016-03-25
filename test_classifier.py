@@ -46,7 +46,7 @@ def test_classify():
     c = NaiveBayesClassifier()
     doc_word_dict = c.const_word_histograms()
     doc_word_vec_dict = c.const_word_vectors(doc_word_dict)
-    predictions = c.classify(doc_word_vec_dict, c.MLE_vec, c.MAP_matrix)
+    predictions = c._classify(doc_word_vec_dict, c.MLE_vec, c.MAP_matrix)
 
     fname = DEFAULT_TEST_PATH + "test_classify.txt"
     test_f = open(fname, 'w')
