@@ -61,8 +61,8 @@ def test_confusion():
 
 
 ##==-- Main --==##
-# test_const_word_histograms()
-# test_const_word_vectors()
-# test_load_models()
-# test_classify()
+test_const_word_histograms()
+test_const_word_vectors()
+test_load_models()
+test_classify()
 test_confusion()

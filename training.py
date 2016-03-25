@@ -69,12 +69,10 @@ class Trainer:
         #         (total # of docs)
         #D: why couldn't the input indices start with 0...
         mle_vec = np.zeros(self.newsgroups.size)
-        total_count = 0
         for ng_id in range(1, self.newsgroups.size+1):
-            count = self.label_hist[ng_id]
-            mle_vec[ng_id-1] = float(count)/self.num_docs
-            total_count += count
-
+            mle_vec[ng_id-1] = self.label_hist[ng_id]
+        total_doc_count = sum(label_hist.values())
+        mle_vec = float(mle_vec) / total_doc_count
         return mle_vec
 
     def calc_matrix_MAP(self):
@@ -87,7 +85,7 @@ class Trainer:
         #  (total words in Y_k) + ((alpha-1)*|V|)
         
         # beta = 1 * self.vocab.size
-        beta = float(1 / self.vocab.size)
+        beta = float(1.0 / self.vocab.size)
         alpha = 1 + beta
         gamma = alpha - 1
         map_matrix = np.zeros((self.vocab.size,
