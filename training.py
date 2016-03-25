@@ -35,32 +35,33 @@ class Trainer:
 
 
 
-    def getlabels(self):
-        """Reads labels file and stores in labeldict."""
-        with open(self.labelfile, 'r') as labelf:
-            linenum = 1
-            for line in labelf:
-                label = line.strip().lower()
-                self.labeldict[linenum] = label
-                linenum += 1
+    #def getlabels(self):
+    #    """Reads labels file and stores in labeldict."""
+    #    with open(self.labelfile, 'r') as labelf:
+    #        linenum = 1
+    #        for line in labelf:
+    #            label = line.strip().lower()
+    #            self.labeldict[linenum] = label
+    #            linenum += 1
 
-    def getdata(self):
-        """Reads data file and stores in dataarray."""
-        self.getlabels()
-        with open(self.datafile, 'r') as dataf:
-            for line in dataf:
-                data = line.split()
-                doc_id = int(data[0])
-                word_id = int(data[1])
-                word_count = int(data[2])
+    #def getdata(self):
+    #    """Reads data file and stores in dataarray."""
+    #    self.getlabels()
+    #    with open(self.datafile, 'r') as dataf:
+    #        for line in dataf:
+    #            data = line.split()
+    #            doc_id = int(data[0])
+    #            word_id = int(data[1])
+    #            word_count = int(data[2])
                 
-                doc_label_id = int(self.labeldict[doc_id])
-                self.num_docs += 1
-                self.label_hist[doc_label_id] += 1
-                self.dataarray[doc_label_id-1, word_id-1] = word_count
+    #            doc_label_id = int(self.labeldict[doc_id])
+    #            self.num_docs += 1
+    #            self.label_hist[doc_label_id] += 1
+    #            self.dataarray[doc_label_id-1, word_id-1] = word_count
+                
     def train(self):
         """The single function to rule them all."""
-        self.getdata()
+        #self.getdata()
         MLE_vec, MAP_matrix = self.generate_model()
         self.save_model(MLE_vec, MAP_matrix)
 
@@ -79,14 +80,17 @@ class Trainer:
         # return mle_vec
 
         mle_vec = np.zeros(self.newsgroups.size)
+        doc_id = 1
         with open(self.labelfile, 'r') as labelf:
             for line in labelf:
                 label = line.strip().lower()
                 mle_vec[int(label)-1] += 1
+
+                #sets label for doc_id in labeldict
+                self.labeldict[doc_id] = label
+                doc_id += 1
         mle_vec = mle_vec / sum(mle_vec)
         return mle_vec
-
-
 
     def calc_matrix_MAP(self):
         """Calculates P(X_i|Y_k),
@@ -98,18 +102,50 @@ class Trainer:
         #  (total words in Y_k) + ((alpha-1)*|V|)
         
         # beta = 1 * self.vocab.size
+
         beta = float(1.0 / self.vocab.size)
         alpha = 1 + beta
         gamma = alpha - 1
+
+        input_matrix = np.zeros((self.vocab.size,
+                                 self.newsgroups.size))
+        with open(self.datafile, 'r') as dataf:
+            for line in dataf:
+                data = line.strip().split()
+                doc_id = int(data[0])
+                word_id = int(data[1])
+                w_count = int(data[2])
+
+                label_id = int(self.labeldict[doc_id])
+                input_matrix[word_id-1, label_id-1] += w_count
+
+        total_words = np.zeros(self.newsgroups.size)
+        for j in range(0, self.newsgroups.size):
+            total_words[j] = sum(input_matrix[:,j])
+            
         map_matrix = np.zeros((self.vocab.size,
-                               self.newsgroups.size))
-        for ng_id in range(1, self.newsgroups.size+1):
-            total_words = sum(self.dataarray[ng_id-1,:])
-            for word_id in range(1, self.vocab.size+1):
-                count = self.dataarray[ng_id-1, word_id-1]
-                P = float(count+gamma) /  \
-                    total_words + gamma*self.vocab.size
-                map_matrix[word_id-1, ng_id-1] = P
+                               self.newsgroups.size))    
+        for i in range(0, self.vocab.size):
+            for j in range(0, self.newsgroups.size):
+                map_matrix[i,j] = \
+                  ( input_matrix[i,j] + gamma ) / \
+                  ( total_words[j] + (gamma*self.vocab.size) )
+                  
+        return map_matrix
+                
+        
+        #beta = float(1.0 / self.vocab.size)
+        #alpha = 1 + beta
+        #gamma = alpha - 1
+        #map_matrix = np.zeros((self.vocab.size,
+        #                       self.newsgroups.size))
+        #for ng_id in range(1, self.newsgroups.size+1):
+        #    total_words = sum(self.dataarray[ng_id-1,:])
+        #    for word_id in range(1, self.vocab.size+1):
+        #        count = self.dataarray[ng_id-1, word_id-1]
+        #        P = float(count+gamma) /  \
+        #            total_words + gamma*self.vocab.size
+        #        map_matrix[word_id-1, ng_id-1] = P
 
         return map_matrix
 

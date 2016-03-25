@@ -29,7 +29,7 @@ def test_calc_vector_MLE():
     """Tests the Trainer.calc_vector_MLE function."""
     print("\tTesting Trainer.calc_vector_MLE()...")
     t = Trainer()
-    t.getdata()
+    #t.getdata()
     MLE_vec = t.calc_vector_MLE()
 
     fname = DEFAULT_TEST_PATH + "test_calc_vector_MLE.txt"
@@ -41,7 +41,8 @@ def test_calc_matrix_MAP():
     """Tests the Trainer.calc_matrix_MAP function."""
     print("\tTesting Trainer.calc_matrix_MAP()...")
     t = Trainer()
-    t.getdata()
+    #t.getdata()
+    MLE_vec = t.calc_vector_MLE() #required because it sets labeldict.
     MAP_matrix = t.calc_matrix_MAP()
 
     fname = DEFAULT_TEST_PATH + "test_calc_matrix_MAP.txt"
@@ -69,7 +70,7 @@ def test_train():
           file=test_f)
 
 ##==-- Main --==##
-test_getdata()
+#test_getdata()
 test_calc_vector_MLE()
 test_calc_matrix_MAP()
 test_train()
