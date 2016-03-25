@@ -108,7 +108,7 @@ class Trainer:
             for word_id in range(1, self.vocab.size+1):
                 count = self.dataarray[ng_id-1, word_id-1]
                 P = float(count+gamma) /  \
-                    total_words + gamma*self.vocab.size
+                    (total_words + gamma*self.vocab.size)
                 map_matrix[word_id-1, ng_id-1] = P
 
         return map_matrix
