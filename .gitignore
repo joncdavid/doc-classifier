@@ -5,3 +5,4 @@ models/*.model*
 model_predictions/*.prediction*
 model_results/*.accuracy*
 model_results/*.confusion_matrix*
+model_results/*
