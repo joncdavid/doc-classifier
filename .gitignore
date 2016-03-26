@@ -6,3 +6,11 @@ model_predictions/*.prediction*
 model_results/*.accuracy*
 model_results/*.confusion_matrix*
 model_results/*.rankings*
+reports/*.aux
+reports/*.bbl
+reports/*blx.bib
+reports/*dvi
+reports/*log
+reports/*out
+reports/*run.xml
+reports/*~
