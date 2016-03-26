@@ -7,22 +7,25 @@ import sys
 from confusionmatrix import *
 
 
-DEFAULT_RESULTS_DIR_PREFIX = "./model_results/"
+#DEFAULT_RESULTS_DIR_PREFIX = "./model_results/"
 
 def build(true_labelfilename, predicted_labelfilename,
           accuracy_outfilename, confusionmatrix_outfilename):
     """Compares predictions against true values and saves results."""
-    CM = ConfusionMatrix(20)
-    confusion_matrix = CM.construct_confusion()
+    CM = ConfusionMatrix(20, true_labelfilename,
+                         predicted_labelfilename)
+    confusion_matrix = CM.construct_confusion(true_labelfilename,
+                                              predicted_labelfilename)
     accuracy = CM.calc_accuracy(confusion_matrix)
 
     # Write confusion matrix to file.
-    matrix_fname = DEFAULT_RESULTS_DIR_PREFIX + confusionmatrix_outfilename
-    CM.print_conf_matrix(matrix_fname, confusion_matrix)
+    #matrix_fname = DEFAULT_RESULTS_DIR_PREFIX + confusionmatrix_outfilename
+    #matrix_fname = DEFAULT_RESULTS_DIR_PREFIX + confusionmatrix_outfilename
+    CM.print_conf_matrix(confusionmatrix_outfilename, confusion_matrix)
 
     # Write accuracy to file.
-    accuracy_fname = DEFAULT_RESULTS_DIR_PREFIX + accuracy_outfilename
-    accuracy_file = open(accuracy_fname, 'w')
+    #accuracy_fname = DEFAULT_RESULTS_DIR_PREFIX + accuracy_outfilename
+    accuracy_file = open(accuracy_outfilename, 'w')
     print("Accuracy:{}".format(accuracy), file=accuracy_file)
     accuracy_file.close()
     
