@@ -39,7 +39,7 @@ class Trainer:
     def train(self):
         """The single function to rule them all."""
         MLE_vec, MAP_matrix, EVIDENCE_vec = self.generate_model()
-        self.save_model(MLE_vec, MAP_matrix)
+        self.save_model(MLE_vec, MAP_matrix, EVIDENCE_vec)
 
     def calc_vector_EVIDENCE(self):
         """Calculates Evidence for P(X),

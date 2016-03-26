@@ -52,7 +52,6 @@ def test_train():
     MLE_vec, MAP_matrix, EVIDENCE_vec = t.generate_model()
 
     fname = DEFAULT_TEST_PATH + "test_generate_model.txt"
-    print("about to write to:{}".format(fname))
     test_f = open(fname, "w")
     mle_f = open(t.DEFAULT_MLE_FILENAME, 'r')
     map_f = open(t.DEFAULT_MAP_FILENAME, 'r')
@@ -66,9 +65,9 @@ def test_stop_train():
     print("\tTesting Trainer.train(stop_words=True)...")
     t = Trainer(stop_words=True)
     t.train()
-    MLE_vec, MAP_matrix = t.generate_model()
+    MLE_vec, MAP_matrix, EVIDENCE_vec = t.generate_model()
 
-    fname = DEFAULT_TEST_PATH + "test_generate_model.txt"
+    fname = DEFAULT_TEST_PATH + "test_generate_stop_model.txt"
     test_f = open(fname, "w")
     mle_f = open(t.DEFAULT_MLE_FILENAME, 'r')
     map_f = open(t.DEFAULT_MAP_FILENAME, 'r')
@@ -80,12 +79,14 @@ def test_stop_train():
 
 def test_word_ranking():
     t = Trainer()
-    t.get_word_ranking(t.calc_matrix_MAP(), t.calc_vector_MLE())
+    MLE_vec = t.calc_vector_MLE()
+    MAP_matrix = t.calc_matrix_MAP()
+    t.get_word_ranking(MAP_matrix, MLE_vec)
 
 ##==-- Main --==##
 test_calc_vector_MLE()
 test_calc_matrix_MAP()
-# test_train()
+test_train()
 test_stop_train()
 test_word_ranking()
 
