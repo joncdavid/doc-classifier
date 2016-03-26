@@ -23,7 +23,9 @@ class NaiveBayesClassifier(object):
 
     def __init__(self,
                  datafile=DEFAULT_DATA_FILE,
-                 labelfile=DEFAULT_LABEL_FILE):
+                 labelfile=DEFAULT_LABEL_FILE,
+                 mlefile=DEFAULT_MLE_FILENAME,
+                 mapfile=DEFAULT_MAP_FILENAME):
         """Initializes this NaiveBayesClassifier."""
         #self.trainer = Trainer(datafile, labelfile)
         #self.trainer.getdata()
@@ -32,10 +34,12 @@ class NaiveBayesClassifier(object):
         self.num_docs = 0
         self.datafile = datafile
         self.labelfile= labelfile
+        self.mlefile = mlefile
+        self.mapfile = mapfile
         self.word_hist = defaultdict(int)
         self.MLE_vec = None
         self.MAP_matrix = None
-        self.load_models()
+        self.load_models(self.mlefile, self.mapfile)
 
     def const_word_histograms(self):
         """Constructs word histogram from datafile."""
@@ -88,7 +92,7 @@ class NaiveBayesClassifier(object):
         map_matrix = self.MAP_matrix
         word_hist = self.const_word_histograms()
         word_vec_dict = self.const_word_vectors(word_hist)
-        self._classify(word_vec_dict, mle_vec, map_matrix)
+        return self._classify(word_vec_dict, mle_vec, map_matrix)
         
     def _classify(self, word_vector_dict, mle_vec, map_matrix):
         """Classifies documents based only on models, and the
