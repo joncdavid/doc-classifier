@@ -130,84 +130,27 @@ class Trainer:
         np.savetxt(mapfilename, MAP_matrix)
         #np.savetxt(evidencefilename, EVIDENCE_vector)
 
-
     def get_word_ranking(self, MAP_matrix, MLE_matrix):
-        rank = np.zeros((self.vocab.size, self.newsgroups.size),  dtype=float)
-        top_ranks = np.zeros((100, 2), dtype=float)
-        top_ranks.fill(-9999999999999)
-        # top_ranks = {}
-        for i in range(0, self.vocab.size):
+        """Rank words in the vocabulary based off of information gain"""
 
-            total = 0
-            total = np.sum(MAP_matrix[i,:])
-            # print("total = ", total)
-            for j in range(0, self.newsgroups.size):
-                # rank[i][j] = MAP_matrix[i][j] * (float(MAP_matrix[i][j]) / total)
-                rank[i][j] = MAP_matrix[i][j] / total
-                # rank[i][j] = -np.log2(float(MAP_matrix[i][j]))
-                # rank[i][j] = -(float(MAP_matrix[i][j]) / total) * np.log2(float(MAP_matrix[i][j]) / total)
-                # rank[i][j] = MAP_matrix[i][j] * -np.log2(float(MAP_matrix[i][j]) / total)
-                # rank[i][j] = -np.log2(MLE_matrix[j] * (float(MAP_matrix[i][j]) / total))
-                # print("rank[",i,"][",j,"] = ", rank[i][j], "MAP[",i,"][",j,"] = ",MAP_matrix[i][j])
-                # if sum(rank[i,:]) > np.min(top_ranks[:,0]):
-                # total += MAP_matrix[i][j] * MLE_matrix[j]
-                # print(MAP_matrix[i][j] * MLE_matrix[j], MAP_matrix[i][j], MLE_matrix[j])
-            # for j in range(0, self.newsgroups.size):
-                # rank[i][j] = MAP_matrix[i][j] * MLE_matrix[j] / total
-            if np.max(rank[i,:]) > np.min(top_ranks[:,0]):
-            # if sum(rank[i,:]) > np.min(top_ranks[:,0]):
-
-                # if rank[i][j] > np.min(top_ranks[:,0]):
-                k = np.argmin(top_ranks[:,0])
-                    # print("Old TR[",k,"][0] = ", top_ranks[k][0]," TR[",k,"][1] = ", top_ranks[k][1] )
-                top_ranks[k][1] = i
-                # top_ranks[k][0] = sum(rank[i,:])
-                top_ranks[k][0] = np.max(rank[i,:])
-                    # top_ranks[k][0] = rank[i][j]
-
-                    # print("New TR[",k,"][0] = ", top_ranks[k][0]," TR[",k,"][1] = ", top_ranks[k][1] )
-                # top_ranks[i] = np.max(rank[i,:])
-
-        # top_ranks = np.sort(top_ranks,0)
-        print(top_ranks)
-        words = []
-        output_file = open("./model_results/top_words.txt", "w")
-
-        for h in range(0, 100):
-            word = self.vocab.get_word(top_ranks[99-h][1])
-            print(word, file=output_file)
-            words.append(word)
-
-
-
-
-
-        print(words)
-
-        return words
-
-    def get_word_ranking2(self, MAP_matrix, MLE_matrix):
-
+        """first remove stopwords from the training data"""
         stopwords = open("./data/stopwords.txt", "r")
         word = stopwords.readline().strip()
-        print("word = ", word)
         while(word != ""):
             for i in range (0, self.vocab.size):
                 if word == self.vocab.get_word(i+1):
                     for j in range(0, self.newsgroups.size):
-                        print("word = ", word, " VOC = ", self.vocab.get_word(i+1), " REMOVING WORD")
                         MAP_matrix[i][j] = 0
             word = stopwords.readline().strip()
-            print("word = ", word)
 
+        """Set up all the various values of probabilities we need"""
         P_XY_ = np.zeros((self.vocab.size, self.newsgroups.size), dtype=float)
         for i in range(0, self.vocab.size):
             for j in range(0, self.newsgroups.size):
                 P_XY_[i][j] = MAP_matrix[i][j] * MLE_matrix[j]
-        # P_XY_ = MAP_matrix * MLE_matrix
         P_Y_ = MLE_matrix
-        print("P_XY_ shape:{}".format(P_XY_.shape))
-        print("P_Y_ shape:{}".format(P_Y_.shape))
+        #print("P_XY_ shape:{}".format(P_XY_.shape))
+        #print("P_Y_ shape:{}".format(P_Y_.shape))
         P_X_ = np.zeros(self.vocab.size, dtype=float)
         P_notX_ = np.zeros(self.vocab.size, dtype=float)
         P_notXY_ = np.zeros((self.vocab.size, self.newsgroups.size), dtype=float)
@@ -216,9 +159,11 @@ class Trainer:
             P_notX_[i] = 1 - P_X_[i]
             for j in range(0, self.newsgroups.size):
                 P_notXY_[i][j] = MLE_matrix[j] * (1 - MAP_matrix[i][j])
-        print("P_X_ shape:{}".format(P_X_.shape))
-        print("P_notXY_ shape:{}".format(P_notXY_.shape))
-        print("P_notX_ shape:{}".format(P_notX_.shape))
+        #print("P_X_ shape:{}".format(P_X_.shape))
+        #print("P_notXY_ shape:{}".format(P_notXY_.shape))
+        #print("P_notX_ shape:{}".format(P_notX_.shape))
+
+        """Calculate the information gain of each of the words"""
         I_X_ = np.zeros(self.vocab.size, dtype=float)
         for i in range(0, self.vocab.size):
             tmp1 = 0
@@ -230,16 +175,15 @@ class Trainer:
                     tmp2 = 0
                     tmp3 = 0
                     continue
-                # tmp1 += P_XY_[i][j] * np.log2(float(P_XY_[i][j]) / P_Y_[j] * P_X_[i])
-                # tmp1 += P_notXY_[i][j] * np.log2(float(P_notXY_[i][j]) / P_Y_[j] * P_notX_[i])
                 tmp1 += P_Y_[j] * np.log2(P_Y_[j])
                 tmp2 += (P_XY_[i][j] / P_X_[i]) * np.log2(P_XY_[i][j] / P_X_[i])
                 tmp3 += (P_notXY_[i][j] / P_notX_[i]) * np.log2(P_notXY_[i][j] / P_notX_[i])
             I_X_[i] = -tmp1 + P_X_[i] * tmp2 + P_notX_[i] * tmp3
-        print("I_X_ shape:{}".format(I_X_.shape))
+        #print("I_X_ shape:{}".format(I_X_.shape))
 
+        """Write the word ranking list to file, starting with the max value"""
         output_file = open("./model_results/top_words.txt", "w")
         for x in range(0, 100):
-            print(self.vocab.get_word(np.argmax(I_X_)+1))
+            # print(self.vocab.get_word(np.argmax(I_X_)+1))
             print(self.vocab.get_word(np.argmax(I_X_)+1), file=output_file)
             I_X_[np.argmax(I_X_)] = -9999999999999
