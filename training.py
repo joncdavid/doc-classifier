@@ -117,17 +117,18 @@ class Trainer:
         """Generates model as MLE_vec, and MAP_matrix."""
         MLE_vec = self.calc_vector_MLE()
         MAP_matrix = self.calc_matrix_MAP(betavalue)
-        EVIDENCE_vec = self.calc_vector_EVIDENCE()
-        return MLE_vec, MAP_matrix, EVIDENCE_vec
+        # EVIDENCE_vec = self.calc_vector_EVIDENCE()
+        return MLE_vec, MAP_matrix#, EVIDENCE_vec
 
-    def save_model(self, MLE_vector, MAP_matrix, EVIDENCE_vector,
+    def save_model(self, MLE_vector, MAP_matrix, #EVIDENCE_vector,
                    mlefilename=DEFAULT_MLE_FILENAME,
                    mapfilename=DEFAULT_MAP_FILENAME,
-                   evidencefilename=DEFAULT_EVIDENCE_FILENAME):
+                   #evidencefilename=DEFAULT_EVIDENCE_FILENAME
+                   ):
         """Saves model in savefilename."""
         np.savetxt(mlefilename, MLE_vector)
         np.savetxt(mapfilename, MAP_matrix)
-        np.savetxt(evidencefilename, EVIDENCE_vector)
+        #np.savetxt(evidencefilename, EVIDENCE_vector)
 
 
     def get_word_ranking(self, MAP_matrix, MLE_matrix):
@@ -185,3 +186,38 @@ class Trainer:
 
         return words
 
+    def get_word_ranking2(self, MAP_matrix, MLE_matrix):
+        P_XY_ = np.zeros((self.vocab.size, self.newsgroups.size), dtype=float)
+        for i in range(0, self.vocab.size):
+            for j in range(0, self.newsgroups.size):
+                P_XY_[i][j] = MAP_matrix[i][j] * MLE_matrix[j]
+        # P_XY_ = MAP_matrix * MLE_matrix
+        P_Y_ = MLE_matrix
+        print("P_XY_ shape:{}".format(P_XY_.shape))
+        print("P_Y_ shape:{}".format(P_Y_.shape))
+        P_X_ = np.zeros(self.vocab.size, dtype=float)
+        P_notX_ = np.zeros(self.vocab.size, dtype=float)
+        P_notXY_ = np.zeros((self.vocab.size, self.newsgroups.size), dtype=float)
+        for i in range(0, self.vocab.size):
+            P_X_[i] = sum(P_XY_[i,:])
+            P_notX_[i] = 1 - P_X_[i]
+            for j in range(0, self.newsgroups.size):
+                P_notXY_[i][j] = MLE_matrix[j] * (1 - MAP_matrix[i][j])
+        print("P_X_ shape:{}".format(P_X_.shape))
+        print("P_notXY_ shape:{}".format(P_notXY_.shape))
+        print("P_notX_ shape:{}".format(P_notX_.shape))
+        I_X_ = np.zeros(self.vocab.size, dtype=float)
+        for i in range(0, self.vocab.size):
+            tmp1 = 0
+            tmp2 = 0
+            for j in range(0, self.newsgroups.size):
+                tmp1 += P_XY_[i][j] * np.log2(float(P_XY_[i][j]) / P_Y_[j] * P_X_[i])
+                tmp1 += P_notXY_[i][j] * np.log2(float(P_notXY_[i][j]) / P_Y_[j] * P_notX_[i])
+            I_X_[i] = tmp1 + tmp2
+        print("I_X_ shape:{}".format(I_X_.shape))
+
+        output_file = open("./model_results/top_words.txt", "w")
+        for x in range(0, 100):
+            print(self.vocab.get_word(np.argmax(I_X_)+1))
+            print(self.vocab.get_word(np.argmax(I_X_)+1), file=output_file)
+            I_X_[np.argmax(I_X_)] = -9999999999999
