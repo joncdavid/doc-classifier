@@ -146,27 +146,58 @@ class Trainer:
         np.savetxt(mapfilename, MAP_matrix)
 
 
-    def get_word_ranking(self, MAP_matrix):
+    def get_word_ranking(self, MAP_matrix, MLE_matrix):
         rank = np.zeros((self.vocab.size, self.newsgroups.size),  dtype=float)
         top_ranks = np.zeros((100, 2), dtype=float)
+        top_ranks.fill(-9999999999999)
+        # top_ranks = {}
         for i in range(0, self.vocab.size):
-            total = sum(MAP_matrix[i,:])
+
+            total = 0
+            total = np.sum(MAP_matrix[i,:])
             # print("total = ", total)
             for j in range(0, self.newsgroups.size):
-                rank[i][j] = float(MAP_matrix[i][j]) / total
+                # rank[i][j] = MAP_matrix[i][j] * (float(MAP_matrix[i][j]) / total)
+                rank[i][j] = MAP_matrix[i][j] / total
+                # rank[i][j] = -np.log2(float(MAP_matrix[i][j]))
+                # rank[i][j] = -(float(MAP_matrix[i][j]) / total) * np.log2(float(MAP_matrix[i][j]) / total)
+                # rank[i][j] = MAP_matrix[i][j] * -np.log2(float(MAP_matrix[i][j]) / total)
+                # rank[i][j] = -np.log2(MLE_matrix[j] * (float(MAP_matrix[i][j]) / total))
                 # print("rank[",i,"][",j,"] = ", rank[i][j], "MAP[",i,"][",j,"] = ",MAP_matrix[i][j])
-                if rank[i,j] > np.min(top_ranks[:,0]):
-                    k = np.argmin(top_ranks[:,0])
-                    # print("Old TR[",k,"][0] = ", top_ranks[k][0]," TR[",k,"][1] = ", top_ranks[k][1] )
-                    top_ranks[k][1] = i
-                    top_ranks[k][0] = rank[i][j]
-                    # print("New TR[",k,"][0] = ", top_ranks[k][0]," TR[",k,"][1] = ", top_ranks[k][1] )
+                # if sum(rank[i,:]) > np.min(top_ranks[:,0]):
+                # total += MAP_matrix[i][j] * MLE_matrix[j]
+                # print(MAP_matrix[i][j] * MLE_matrix[j], MAP_matrix[i][j], MLE_matrix[j])
+            # for j in range(0, self.newsgroups.size):
+                # rank[i][j] = MAP_matrix[i][j] * MLE_matrix[j] / total
+            if np.max(rank[i,:]) > np.min(top_ranks[:,0]):
+            # if sum(rank[i,:]) > np.min(top_ranks[:,0]):
 
-        # print(top_ranks)
+                # if rank[i][j] > np.min(top_ranks[:,0]):
+                k = np.argmin(top_ranks[:,0])
+                    # print("Old TR[",k,"][0] = ", top_ranks[k][0]," TR[",k,"][1] = ", top_ranks[k][1] )
+                top_ranks[k][1] = i
+                # top_ranks[k][0] = sum(rank[i,:])
+                top_ranks[k][0] = np.max(rank[i,:])
+                    # top_ranks[k][0] = rank[i][j]
+
+                    # print("New TR[",k,"][0] = ", top_ranks[k][0]," TR[",k,"][1] = ", top_ranks[k][1] )
+                # top_ranks[i] = np.max(rank[i,:])
+
+        # top_ranks = np.sort(top_ranks,0)
+        print(top_ranks)
         words = []
-        for h in range (0, 100):
-            word = self.vocab.get_word(top_ranks[h][1])
+        output_file = open("./model_results/top_words.txt", "w")
+
+        for h in range(0, 100):
+            word = self.vocab.get_word(top_ranks[99-h][1])
+            print(word, file=output_file)
             words.append(word)
-        # print(words)
+
+
+
+
+
+        print(words)
+
         return words
 
