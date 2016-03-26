@@ -144,3 +144,29 @@ class Trainer:
         """Saves model in savefilename."""
         np.savetxt(mlefilename, MLE_vector)
         np.savetxt(mapfilename, MAP_matrix)
+
+
+    def get_word_ranking(self, MAP_matrix):
+        rank = np.zeros((self.vocab.size, self.newsgroups.size),  dtype=float)
+        top_ranks = np.zeros((100, 2), dtype=float)
+        for i in range(0, self.vocab.size):
+            total = sum(MAP_matrix[i,:])
+            # print("total = ", total)
+            for j in range(0, self.newsgroups.size):
+                rank[i][j] = float(MAP_matrix[i][j]) / total
+                # print("rank[",i,"][",j,"] = ", rank[i][j], "MAP[",i,"][",j,"] = ",MAP_matrix[i][j])
+                if rank[i,j] > np.min(top_ranks[:,0]):
+                    k = np.argmin(top_ranks[:,0])
+                    # print("Old TR[",k,"][0] = ", top_ranks[k][0]," TR[",k,"][1] = ", top_ranks[k][1] )
+                    top_ranks[k][1] = i
+                    top_ranks[k][0] = rank[i][j]
+                    # print("New TR[",k,"][0] = ", top_ranks[k][0]," TR[",k,"][1] = ", top_ranks[k][1] )
+
+        # print(top_ranks)
+        words = []
+        for h in range (0, 100):
+            word = self.vocab.get_word(top_ranks[h][1])
+            words.append(word)
+        # print(words)
+        return words
+
