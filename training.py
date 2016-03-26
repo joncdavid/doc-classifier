@@ -16,6 +16,7 @@ class Trainer:
     DEFAULT_LABEL_FILE = "./data/train.label"
     DEFAULT_MLE_FILENAME = "./models/mle.model"
     DEFAULT_MAP_FILENAME = "./models/map.model"
+    DEFAULT_EVIDENCE_FILENAME = "./models/evidence.model"
 
     def __init__(self,
                  datafile=DEFAULT_DATA_FILE,
@@ -39,10 +40,25 @@ class Trainer:
         MLE_vec, MAP_matrix = self.generate_model()
         self.save_model(MLE_vec, MAP_matrix)
 
+    def calc_vector_EVIDENCE(self):
+        """Calculates Evidence for P(X),
+        for all X in Vocabulary, and returns a vector,
+        whose index represents vocabulary_id-1."""
+        evi_vec = np.zeros(self.vocab.size)
+        with open(self.datafile, 'r') as dataf:
+            for line in dataf:
+                data = line.strip().split()
+                word_id = int(data[1])
+                word_count = int(data[2])
+                evi_vec[int(word_id)-1] += word_count
+        evi_vec = evi_vec / sum(evi_vec)
+        return evi_vec
+
+        
     def calc_vector_MLE(self):
         """Calculates MLE for P(Y_k),
         for all Y_k in NewsGroups, and returns a vector,
-        whose index represents newsgroup_id."""
+        whose index represents newsgroup_id-1."""
         #P(Y_k) = (# of docs labeled Y_k) /
         #         (total # of docs)
         mle_vec = np.zeros(self.newsgroups.size)
@@ -101,14 +117,17 @@ class Trainer:
         """Generates model as MLE_vec, and MAP_matrix."""
         MLE_vec = self.calc_vector_MLE()
         MAP_matrix = self.calc_matrix_MAP(betavalue)
-        return MLE_vec, MAP_matrix
+        EVIDENCE_vec = self.calc_vector_EVIDENCE()
+        return MLE_vec, MAP_matrix, EVIDENCE_vec
 
-    def save_model(self, MLE_vector, MAP_matrix,
+    def save_model(self, MLE_vector, MAP_matrix, EVIDENCE_vector,
                    mlefilename=DEFAULT_MLE_FILENAME,
-                   mapfilename=DEFAULT_MAP_FILENAME):
+                   mapfilename=DEFAULT_MAP_FILENAME,
+                   evidencefilename=DEFAULT_EVIDENCE_FILENAME):
         """Saves model in savefilename."""
         np.savetxt(mlefilename, MLE_vector)
         np.savetxt(mapfilename, MAP_matrix)
+        np.savetxt(evidencefilename, EVIDENCE_vector)
 
 
     def get_word_ranking(self, MAP_matrix, MLE_matrix):

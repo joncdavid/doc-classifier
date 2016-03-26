@@ -14,11 +14,13 @@ DF_TEST_LABELFILE="./data/test.label"
 DF_MODEL_PREFIX="./models/"
 DF_MLE_MODELFILE="./models/mle.model"
 DF_MAP_MODELFILE="./models/map.model"
+DF_EVIDENCE_MODELFILE="./models/evidence.model"
 
 DF_PRED_PREFIX="./model_predictions/"
 DF_PREDICTIONFILE="./model_predictions/model.prediction"
 
 DF_RESULTS_PREFIX="./model_results/"
+DF_WORD_RANKFILE="./model_results/word.rankings"
 DF_ACCURACYFILE="./model_results/model.accuracy"
 DF_CONFUSIONMATRIXFILE="./model_results/model.confusion_matrix"
 
@@ -49,10 +51,17 @@ build_betas: build_beta_models build_beta_predictions build_beta_results
 build_model:
 	time $(CC) build_models.py --data=$(DF_TRAIN_DATAFILE) \
 	--label=$(DF_TRAIN_LABELFILE) --mle=$(DF_MLE_MODELFILE) \
-	--map=$(DF_MAP_MODELFILE)
+	--map=$(DF_MAP_MODELFILE) --evidence=$(DF_EVIDENCE_MODELFILE)
 
 build_beta_models:
 	time make -f Makefile.betas build_beta_models
+
+build_rank:
+	time $(CC) build_ranks.py $(DF_MLE_MODELFILE) $(DF_MAP_MODELFILE) \
+	$(DF_EVIDENCE_MODELFILE) $(DF_WORD_RANKFILE)
+
+build_beta_ranks:
+	time make -f Makefile.betas build_beta_ranks
 
 build_prediction:
 	time $(CC) build_predictions.py $(DF_MLE_MODELFILE) \
@@ -86,10 +95,11 @@ test_confusionmatrix: test_confusionmatrix.py
 clean:
 	rm -f *.done
 	rm -f *~
-	rm -f $(DF_MODEL_PREFIX)/*.model
-	rm -f $(DF_PRED_PREFIX)/*.prediction
-	rm -f $(DF_RESULTS_PREFIX)/*.accuracy
-	rm -f $(DF_RESULTS_PREFIX)/*.confusion_matrix
+	rm -f $(DF_MODEL_PREFIX)/*.model*
+	rm -f $(DF_PRED_PREFIX)/*.prediction*
+	rm -f $(DF_RESULTS_PREFIX)/*.accuracy*
+	rm -f $(DF_RESULTS_PREFIX)/*.confusion_matrix*
+	rm -f $(DF_RESULTS_PREFIX)/*.data*
 	rm -f ./test_output/*.txt
 	rm -f ./__pycache__/*.pyc
 	rm -f *.pyc

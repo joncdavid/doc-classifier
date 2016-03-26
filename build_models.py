@@ -7,31 +7,28 @@ import sys
 
 from training import Trainer
 
-#DEFAULT_INPUT_DIR_PREFIX = "./data/"
-#DEFAULT_MODEL_DIR_PREFIX = "./models/"
 
 def build(trainingdatafile, traininglabelfile,
-          mleoutfile, mapoutfile, stoplistfile=None, betavalue=None):
+          mleoutfile, mapoutfile, evidenceoutfile,
+          stoplistfile=None, betavalue=None):
     """Builds a model and saves them in a file."""
-    #datafile = DEFAULT_INPUT_DIR_PREFIX + trainingdatafile
-    #labelfile = DEFAULT_INPUT_DIR_PREFIX + traininglabelfile
-    #mleoutfile = DEFAULT_MODEL_DIR_PREFIX + mleoutfile
-    #mapoutfile = DEFAULT_MODEL_DIR_PREFIX + mapoutfile
-    
     pstr = "\tBuilding model with stopfile:{}, beta:{}" + \
-      "\n\t\tdatafile:{}\n\t\tlabelfile:{}\n\t\tmleout:{}\n\t\tmapout:{}\n"
+      "\n\t\tdatafile:{}\n\t\tlabelfile:{}" + \
+      "\n\t\tmleout:{}\n\t\tmapout:{}" + \
+      "\n\t\tevidenceout:{}"
     print(pstr.format(stoplistfile, betavalue,
                       trainingdatafile, traininglabelfile,
-                      mleoutfile, mapoutfile))
+                      mleoutfile, mapoutfile, evidenceoutfile))
     t = Trainer(trainingdatafile, traininglabelfile)
-    MLE_vec, MAP_matrix = t.generate_model(betavalue)
-    t.save_model(MLE_vec, MAP_matrix, mleoutfile, mapoutfile)
+    MLE_vec, MAP_matrix, EVIDENCE_vec = t.generate_model(betavalue)
+    t.save_model(MLE_vec, MAP_matrix, EVIDENCE_vec,
+                 mleoutfile, mapoutfile, evidenceoutfile)
 
 
 def main():
     """Defines the main function for this module."""
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hosbdlxy:v", ["help", "output=", "stoplist=", "beta=", "data=", "label=", "mle=", "map="])
+        opts, args = getopt.getopt(sys.argv[1:], "hosbdlxye:v", ["help", "output=", "stoplist=", "beta=", "data=", "label=", "mle=", "map=", "evidence="])
     except getopt.GetoptError as err:
         # print help information and exit:
         print(err) #will print something like "option -a not recognized"
@@ -47,6 +44,7 @@ def main():
     traininglabelfile = None
     mleoutfile = None
     mapoutfile = None
+    evidenceoutfile = None
 
     for o,a in opts:
         if o == "-v":
@@ -68,13 +66,16 @@ def main():
             mleoutfile = a
         elif o in ("-y", "--map"):
             mapoutfile = a
+        elif o in ("-e", "--evidence"):
+            evidenceoutfile = a
         else:
             assert False, "unhandled option"
 
     if (trainingdatafile is not None) and (traininglabelfile is not None) and \
-        (mleoutfile is not None) and (mapoutfile is not None):
+        (mleoutfile is not None) and (mapoutfile is not None) and \
+        (evidenceoutfile is not None):
         build(trainingdatafile, traininglabelfile,
-              mleoutfile, mapoutfile,
+              mleoutfile, mapoutfile, evidenceoutfile,
               stoplistfile=stoplist, betavalue=beta)
         return
 
@@ -84,9 +85,10 @@ def main():
     print("\t(2) [input] filename of training labels")
     print("\t(3) [output] filename of MLE file")
     print("\t(4) [output] filename of MAP file")
+    print("\t(5) [output] filename of EVIDENCE file")
     print("\nExample:")
     print("\tpython3 [options] build_predictions.py <data> <labels>" + \
-          " <mle-file> <map-file>")
+          " <mle-file> <map-file> <evidence-file>")
     print("\nExiting.\n")
     sys.exit(2)
 

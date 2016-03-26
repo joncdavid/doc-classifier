@@ -1,10 +1,23 @@
 #!/usr/env python3
 # filename: test_training.py
 # authors: Jon David and Jarrett Decker
+
+import numpy as np
 from training import Trainer
+
 
 DEFAULT_TEST_PATH = "./test_output/"
 
+def test_calc_vector_EVIDENCE():
+    """Tests the Trainer.calc_vector_EVIDENCE function."""
+    t = Trainer()
+    EVIDENCE_vec = t.calc_vector_EVIDENCE()
+
+    fname = DEFAULT_TEST_PATH + "test_calc_vector_EVIDENCE.txt"
+    np.savetxt(fname, EVIDENCE_vec)
+    
+
+    
 def test_calc_vector_MLE():
     """Tests the Trainer.calc_vector_MLE function."""
     print("\tTesting Trainer.calc_vector_MLE()...")
