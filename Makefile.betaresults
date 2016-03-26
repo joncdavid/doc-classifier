@@ -10,6 +10,8 @@ DF_TEST_LABELFILE=./data/test.label
 DF_MODEL_PREFIX=./models/
 DF_PRED_PREFIX=./model_predictions/
 
+DF_RESULTS_PREFIX=./model_results/
+
 BETA01_MODELSUFFIX=.beta.0.1.model
 BETA02_MODELSUFFIX=.beta.0.2.model
 BETA03_MODELSUFFIX=.beta.0.3.model
@@ -95,35 +97,39 @@ all: build_beta_results
 
 ####====---- build section ----================================================
 build_beta_results:
+	echo $(DF_TEST_LABELFILE)
+	echo $(BETA01_PREDFILE)
+	echo $(BETA01_ACCURACYFILE)
+	echo $(BETA01_CONFUSIONMATRIXFILE)
 	time $(CC) build_results.py $(DF_TEST_LABELFILE) $(BETA01_PREDFILE) \
 	$(BETA01_ACCURACYFILE) $(BETA01_CONFUSIONMATRIXFILE)
 
-	#time $(CC) build_predictions.py $(BETA02_MLEFILE) $(BETA02_MAPFILE) \
-	#$(BETA02_PREDFILE)
+	time $(CC) build_predictions.py $(BETA02_MLEFILE) $(BETA02_MAPFILE) \
+	$(BETA02_PREDFILE)
 
-	#time $(CC) build_predictions.py $(BETA03_MLEFILE) $(BETA03_MAPFILE) \
-	#$(BETA03_PREDFILE)
+	time $(CC) build_predictions.py $(BETA03_MLEFILE) $(BETA03_MAPFILE) \
+	$(BETA03_PREDFILE)
 
-	#time $(CC) build_predictions.py $(BETA04_MLEFILE) $(BETA04_MAPFILE) \
-	#$(BETA04_PREDFILE)
+	time $(CC) build_predictions.py $(BETA04_MLEFILE) $(BETA04_MAPFILE) \
+	$(BETA04_PREDFILE)
 
-	#time $(CC) build_predictions.py $(BETA05_MLEFILE) $(BETA05_MAPFILE) \
-	#$(BETA05_PREDFILE)
+	time $(CC) build_predictions.py $(BETA05_MLEFILE) $(BETA05_MAPFILE) \
+	$(BETA05_PREDFILE)
 
-	#time $(CC) build_predictions.py $(BETA06_MLEFILE) $(BETA06_MAPFILE) \
-	#$(BETA06_PREDFILE)
+	time $(CC) build_predictions.py $(BETA06_MLEFILE) $(BETA06_MAPFILE) \
+	$(BETA06_PREDFILE)
 
-	#time $(CC) build_predictions.py $(BETA07_MLEFILE) $(BETA07_MAPFILE) \
-	#$(BETA07_PREDFILE)
+	time $(CC) build_predictions.py $(BETA07_MLEFILE) $(BETA07_MAPFILE) \
+	$(BETA07_PREDFILE)
 
-	#time $(CC) build_predictions.py $(BETA08_MLEFILE) $(BETA08_MAPFILE) \
-	#$(BETA08_PREDFILE)
+	time $(CC) build_predictions.py $(BETA08_MLEFILE) $(BETA08_MAPFILE) \
+	$(BETA08_PREDFILE)
 
-	#time $(CC) build_predictions.py $(BETA09_MLEFILE) $(BETA09_MAPFILE) \
-	#$(BETA09_PREDFILE)
+	time $(CC) build_predictions.py $(BETA09_MLEFILE) $(BETA09_MAPFILE) \
+	$(BETA09_PREDFILE)
 
-	#time $(CC) build_predictions.py $(BETA10_MLEFILE) $(BETA10_MAPFILE) \
-	#$(BETA10_PREDFILE)
+	time $(CC) build_predictions.py $(BETA10_MLEFILE) $(BETA10_MAPFILE) \
+	$(BETA10_PREDFILE)
 
 clean:
 	rm -f $(DF_PRED_PREFIX)/*.model

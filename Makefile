@@ -42,6 +42,10 @@ all:
 
 
 ####====---- build section ----================================================
+build: build_model build_prediction build_result
+
+build_betas: build_beta_models build_beta_predictions build_beta_results
+
 build_model:
 	time $(CC) build_models.py --data=$(DF_TRAIN_DATAFILE) \
 	--label=$(DF_TRAIN_LABELFILE) --mle=$(DF_MLE_MODELFILE) \
