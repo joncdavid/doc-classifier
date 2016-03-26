@@ -1,0 +1,148 @@
+# filename: Makefile
+# authors: Jon David and Jarrett Decker
+
+
+CC=python3
+
+
+DF_DATA_PREFIX="./data/"
+DF_TRAIN_DATAFILE="./data/train.data"
+DF_TRAIN_LABELFILE="./data/train.label"
+DF_TEST_DATAFILE="./data/test.data"
+DF_TEST_LABELFILE="./data/test.label"
+
+DF_MODEL_PREFIX="./models/"
+DF_MLE_MODELFILE="./models/mle.model"
+DF_MAP_MODELFILE="./models/map.model"
+
+DF_PRED_PREFIX="./model_predictions/"
+DF_PREDICTIONFILE="./model_predictions/model.prediction"
+
+DF_RESULTS_PREFIX="./model_results/"
+DF_ACCURACYFILE="./model_results/model.accuracy"
+DF_CONFUSIONMATRIXFILE="./model_results/model.confusion_matrix"
+
+
+
+.PHONY: all build_beta_models
+
+all:
+
+build_beta_models:
+	bash simple_build_model.sh $(DF_TRAIN_DATAFILE) \
+	$(DF_TRAIN_LABELFILE) $(DF_MLE_MODELFILE) \
+	$(DF_MAP_MODELFILE) 0.00001
+
+	bash simple_build_model.sh $(DF_TRAIN_DATAFILE) \
+	$(DF_TRAIN_LABELFILE) $(DF_MLE_MODELFILE) \
+	$(DF_MAP_MODELFILE) 0.0001
+
+	bash simple_build_model.sh $(DF_TRAIN_DATAFILE) \
+	$(DF_TRAIN_LABELFILE) $(DF_MLE_MODELFILE) \
+	$(DF_MAP_MODELFILE) 0.001
+
+	bash simple_build_model.sh $(DF_TRAIN_DATAFILE) \
+	$(DF_TRAIN_LABELFILE) $(DF_MLE_MODELFILE) \
+	$(DF_MAP_MODELFILE) 0.01
+
+	bash simple_build_model.sh $(DF_TRAIN_DATAFILE) \
+	$(DF_TRAIN_LABELFILE) $(DF_MLE_MODELFILE) \
+	$(DF_MAP_MODELFILE) 0.1
+
+	bash simple_build_model.sh $(DF_TRAIN_DATAFILE) \
+	$(DF_TRAIN_LABELFILE) $(DF_MLE_MODELFILE) \
+	$(DF_MAP_MODELFILE) 0.2
+
+	bash simple_build_model.sh $(DF_TRAIN_DATAFILE) \
+	$(DF_TRAIN_LABELFILE) $(DF_MLE_MODELFILE) \
+	$(DF_MAP_MODELFILE) 0.4
+
+	bash simple_build_model.sh $(DF_TRAIN_DATAFILE) \
+	$(DF_TRAIN_LABELFILE) $(DF_MLE_MODELFILE) \
+	$(DF_MAP_MODELFILE) 0.6
+
+	bash simple_build_model.sh $(DF_TRAIN_DATAFILE) \
+	$(DF_TRAIN_LABELFILE) $(DF_MLE_MODELFILE) \
+	$(DF_MAP_MODELFILE) 0.8
+
+	bash simple_build_model.sh $(DF_TRAIN_DATAFILE) \
+	$(DF_TRAIN_LABELFILE) $(DF_MLE_MODELFILE) \
+	$(DF_MAP_MODELFILE) 1.0
+
+
+build_beta_predictions:
+	bash simple_build_prediction.sh $(DF_MLE_MODELFILE) \
+	$(DF_MAP_MODELFILE) $(DF_PREDICTIONFILE) 0.00001
+
+	bash simple_build_prediction.sh $(DF_MLE_MODELFILE) \
+	$(DF_MAP_MODELFILE) $(DF_PREDICTIONFILE) 0.0001
+
+	bash simple_build_prediction.sh $(DF_MLE_MODELFILE) \
+	$(DF_MAP_MODELFILE) $(DF_PREDICTIONFILE) 0.001
+
+	bash simple_build_prediction.sh $(DF_MLE_MODELFILE) \
+	$(DF_MAP_MODELFILE) $(DF_PREDICTIONFILE) 0.01
+
+	bash simple_build_prediction.sh $(DF_MLE_MODELFILE) \
+	$(DF_MAP_MODELFILE) $(DF_PREDICTIONFILE) 0.1
+
+	bash simple_build_prediction.sh $(DF_MLE_MODELFILE) \
+	$(DF_MAP_MODELFILE) $(DF_PREDICTIONFILE) 0.2
+
+	bash simple_build_prediction.sh $(DF_MLE_MODELFILE) \
+	$(DF_MAP_MODELFILE) $(DF_PREDICTIONFILE) 0.4
+
+	bash simple_build_prediction.sh $(DF_MLE_MODELFILE) \
+	$(DF_MAP_MODELFILE) $(DF_PREDICTIONFILE) 0.6
+
+	bash simple_build_prediction.sh $(DF_MLE_MODELFILE) \
+	$(DF_MAP_MODELFILE) $(DF_PREDICTIONFILE) 0.8
+
+	bash simple_build_prediction.sh $(DF_MLE_MODELFILE) \
+	$(DF_MAP_MODELFILE) $(DF_PREDICTIONFILE) 1.0
+
+
+build_beta_results:
+	bash simple_build_result.sh $(DF_TEST_LABELFILE) \
+	$(DF_PREDICTIONFILE) $(DF_ACCURACYFILE) \
+	$(DF_CONFUSIONMATRIXFILE) 0.00001
+
+	bash simple_build_result.sh $(DF_TEST_LABELFILE) \
+	$(DF_PREDICTIONFILE) $(DF_ACCURACYFILE) \
+	$(DF_CONFUSIONMATRIXFILE) 0.0001
+
+	bash simple_build_result.sh $(DF_TEST_LABELFILE) \
+	$(DF_PREDICTIONFILE) $(DF_ACCURACYFILE) \
+	$(DF_CONFUSIONMATRIXFILE) 0.001
+
+	bash simple_build_result.sh $(DF_TEST_LABELFILE) \
+	$(DF_PREDICTIONFILE) $(DF_ACCURACYFILE) \
+	$(DF_CONFUSIONMATRIXFILE) 0.01
+
+	bash simple_build_result.sh $(DF_TEST_LABELFILE) \
+	$(DF_PREDICTIONFILE) $(DF_ACCURACYFILE) \
+	$(DF_CONFUSIONMATRIXFILE) 0.1
+
+	bash simple_build_result.sh $(DF_TEST_LABELFILE) \
+	$(DF_PREDICTIONFILE) $(DF_ACCURACYFILE) \
+	$(DF_CONFUSIONMATRIXFILE) 0.2
+
+	bash simple_build_result.sh $(DF_TEST_LABELFILE) \
+	$(DF_PREDICTIONFILE) $(DF_ACCURACYFILE) \
+	$(DF_CONFUSIONMATRIXFILE) 0.4
+
+	bash simple_build_result.sh $(DF_TEST_LABELFILE) \
+	$(DF_PREDICTIONFILE) $(DF_ACCURACYFILE) \
+	$(DF_CONFUSIONMATRIXFILE) 0.6
+
+	bash simple_build_result.sh $(DF_TEST_LABELFILE) \
+	$(DF_PREDICTIONFILE) $(DF_ACCURACYFILE) \
+	$(DF_CONFUSIONMATRIXFILE) 0.8
+
+	bash simple_build_result.sh $(DF_TEST_LABELFILE) \
+	$(DF_PREDICTIONFILE) $(DF_ACCURACYFILE) \
+	$(DF_CONFUSIONMATRIXFILE) 1.0
+
+
+clean:
+	rm -f $(DF_MODEL_PREFIX)/*.model

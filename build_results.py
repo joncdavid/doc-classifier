@@ -26,7 +26,7 @@ def build(true_labelfilename, predicted_labelfilename,
     # Write accuracy to file.
     #accuracy_fname = DEFAULT_RESULTS_DIR_PREFIX + accuracy_outfilename
     accuracy_file = open(accuracy_outfilename, 'w')
-    print("Accuracy:{}".format(accuracy), file=accuracy_file)
+    print("{}".format(accuracy), file=accuracy_file)
     accuracy_file.close()
     
 def main():

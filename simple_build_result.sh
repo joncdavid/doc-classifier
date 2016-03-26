@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# filename: simple_build_result.sh
+#
+
+ACTUAL_LABELFILE=$1
+PRED_LABELFILE=$2
+ACCURACYFILE=$3
+CONFUSIONFILE=$4
+BETA=$5
+
+PRED_F=$PRED_LABELFILE.beta.$BETA
+ACCU_F=$ACCURACYFILE.beta.$BETA
+CONF_F=$CONFUSIONFILE.beta.$BETA
+
+python3 build_results.py $ACTUAL_LABELFILE $PRED_F $ACCU_F $CONF_F

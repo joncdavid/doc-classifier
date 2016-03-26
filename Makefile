@@ -52,21 +52,21 @@ build_model:
 	--map=$(DF_MAP_MODELFILE)
 
 build_beta_models:
-	make -f Makefile.betamodels
+	make -f Makefile.betas build_beta_models
 
 build_prediction:
 	time $(CC) build_predictions.py $(DF_MLE_MODELFILE) \
 	$(DF_MAP_MODELFILE) $(DF_PREDICTIONFILE)
 
 build_beta_predictions:
-	make -f Makefile.betapredictions
+	make -f Makefile.betas build_beta_predictions
 
 build_result:
 	time $(CC) build_results.py $(DF_TEST_LABELFILE) $(DF_PREDICTIONFILE) \
 	$(DF_ACCURACYFILE) $(DF_CONFUSIONMATRIXFILE)
 
 build_beta_results:
-	make -f Makefile.betaresults
+	make -f Makefile.betas build_beta_results
 
 
 ####====---- test section ----=================================================
