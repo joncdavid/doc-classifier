@@ -187,6 +187,19 @@ class Trainer:
         return words
 
     def get_word_ranking2(self, MAP_matrix, MLE_matrix):
+
+        stopwords = open("./data/stopwords.txt", "r")
+        word = stopwords.readline().strip()
+        print("word = ", word)
+        while(word != ""):
+            for i in range (0, self.vocab.size):
+                if word == self.vocab.get_word(i+1):
+                    for j in range(0, self.newsgroups.size):
+                        print("word = ", word, " VOC = ", self.vocab.get_word(i+1), " REMOVING WORD")
+                        MAP_matrix[i][j] = 0
+            word = stopwords.readline().strip()
+            print("word = ", word)
+
         P_XY_ = np.zeros((self.vocab.size, self.newsgroups.size), dtype=float)
         for i in range(0, self.vocab.size):
             for j in range(0, self.newsgroups.size):
@@ -212,6 +225,11 @@ class Trainer:
             tmp2 = 0
             tmp3 = 0
             for j in range(0, self.newsgroups.size):
+                if(P_XY_[i][j] == 0 or P_X_[i] == 0 or P_notXY_[i][j] == 0 or P_notX_[i] == 0):
+                    tmp1 = 0
+                    tmp2 = 0
+                    tmp3 = 0
+                    continue
                 # tmp1 += P_XY_[i][j] * np.log2(float(P_XY_[i][j]) / P_Y_[j] * P_X_[i])
                 # tmp1 += P_notXY_[i][j] * np.log2(float(P_notXY_[i][j]) / P_Y_[j] * P_notX_[i])
                 tmp1 += P_Y_[j] * np.log2(P_Y_[j])
