@@ -27,8 +27,6 @@ class NaiveBayesClassifier(object):
                  mlefile=DEFAULT_MLE_FILENAME,
                  mapfile=DEFAULT_MAP_FILENAME):
         """Initializes this NaiveBayesClassifier."""
-        #self.trainer = Trainer(datafile, labelfile)
-        #self.trainer.getdata()
         self.vocab = vb.Vocabulary()
         self.newsgroups = ng.NewsGroups()
         self.num_docs = 0
@@ -98,54 +96,46 @@ class NaiveBayesClassifier(object):
         """Classifies documents based only on models, and the
         its input word histograms. Returns an array of
         predicted labels (i.e., NewsGroupIDs)"""
-        #Y_prediction =
-        #  argmax( log2(P(Y_k)) +
-        #          sum_i(# of X_i) * log2(P(X_i|Y_k)) ).
-
         predictions = np.zeros(self.num_docs)
         for doc_id in range(1, self.num_docs+1):
             word_vector = word_vector_dict[doc_id]
             a = mle_vec.T
             b = word_vector.T
             c = map_matrix
-            #print("a shape:{}".format(a.shape))
-            #print("b shape:{}".format(b.shape))
-            #print("c shape:{}".format(c.shape))
-            #d = a + b.dot(c)
+
             a_log2 = np.log2(a)
             c_log2 = np.log2(c)
             d = a_log2 + b.dot(c_log2)
 
             predicted_newsgroup_id = d.argmax()+1
             predictions[doc_id-1] = predicted_newsgroup_id
-
         return predictions
 
-    def confusionmatrix(self, true_label_file = DEFAULT_LABEL_FILE, pred_label_file = "./test_output/test_classify.txt"):
+    def confusionmatrix(self,
+                        true_label_file=DEFAULT_LABEL_FILE,
+                        pred_label_file = "./test_output/test_classify.txt"):
         """ Creates matrix containing predicted labels vs true labels"""
         true_label = open(true_label_file, 'r')
         pred_label = open(pred_label_file, 'r')
-        confusion_matrix = np.zeros((self.newsgroups.size, self.newsgroups.size), dtype=int)
-
+        confusion_matrix = np.zeros((self.newsgroups.size,
+                                     self.newsgroups.size), dtype=int)
+        
         t_l = true_label.readline().strip()
         p_l = pred_label.readline().strip()
-
         while t_l != '':
             confusion_matrix[int(t_l) - 1][int(p_l) - 1] += 1
             t_l = true_label.readline().strip()
             p_l = pred_label.readline().strip()
-
         return confusion_matrix
 
     def accuracy(self, confusion_matrix):
-
-        i=len(confusion_matrix)
-        correct=0
-        total=0
+        """Calculates the accuracy of this model."""
+        i = len(confusion_matrix)
+        correct = 0
+        total = 0
         for x in range(0, i):
             for y in range(0, i):
                 total += confusion_matrix[x][y]
                 if x == y:
                     correct += confusion_matrix[x][y]
-
         return float(correct / total)

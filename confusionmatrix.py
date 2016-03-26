@@ -44,8 +44,6 @@ class ConfusionMatrix(object):
         line_num = 1
         while t_l != '':
             conf_matrix[int(t_l) - 1][int(p_l) - 1] += 1
-            #if t_l != p_l:
-            #    print("Line:{}, Actual:{}, Predicted:{}".format(line_num, t_l, p_l))
             t_l = true_label_f.readline().strip()
             p_l = pred_label_f.readline().strip()
 

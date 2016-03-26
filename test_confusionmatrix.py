@@ -23,6 +23,5 @@ def test_calc_accuracy(CM):
     
 ##==-- Main --==##
 CM = ConfusionMatrix(20)
-
 test_construct_confusion(CM)
 test_calc_accuracy(CM)
