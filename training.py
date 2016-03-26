@@ -37,7 +37,7 @@ class Trainer:
 
     def train(self):
         """The single function to rule them all."""
-        MLE_vec, MAP_matrix = self.generate_model()
+        MLE_vec, MAP_matrix, EVIDENCE_vec = self.generate_model()
         self.save_model(MLE_vec, MAP_matrix)
 
     def calc_vector_EVIDENCE(self):
@@ -117,18 +117,17 @@ class Trainer:
         """Generates model as MLE_vec, and MAP_matrix."""
         MLE_vec = self.calc_vector_MLE()
         MAP_matrix = self.calc_matrix_MAP(betavalue)
-        # EVIDENCE_vec = self.calc_vector_EVIDENCE()
-        return MLE_vec, MAP_matrix#, EVIDENCE_vec
+        EVIDENCE_vec = self.calc_vector_EVIDENCE()
+        return MLE_vec, MAP_matrix, EVIDENCE_vec
 
-    def save_model(self, MLE_vector, MAP_matrix, #EVIDENCE_vector,
+    def save_model(self, MLE_vector, MAP_matrix, EVIDENCE_vector,
                    mlefilename=DEFAULT_MLE_FILENAME,
                    mapfilename=DEFAULT_MAP_FILENAME,
-                   #evidencefilename=DEFAULT_EVIDENCE_FILENAME
-                   ):
+                   evidencefilename=DEFAULT_EVIDENCE_FILENAME):
         """Saves model in savefilename."""
         np.savetxt(mlefilename, MLE_vector)
         np.savetxt(mapfilename, MAP_matrix)
-        #np.savetxt(evidencefilename, EVIDENCE_vector)
+        np.savetxt(evidencefilename, EVIDENCE_vector)
 
     def get_word_ranking(self, MAP_matrix, MLE_matrix):
         """Rank words in the vocabulary based off of information gain"""
