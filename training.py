@@ -210,10 +210,14 @@ class Trainer:
         for i in range(0, self.vocab.size):
             tmp1 = 0
             tmp2 = 0
+            tmp3 = 0
             for j in range(0, self.newsgroups.size):
-                tmp1 += P_XY_[i][j] * np.log2(float(P_XY_[i][j]) / P_Y_[j] * P_X_[i])
-                tmp1 += P_notXY_[i][j] * np.log2(float(P_notXY_[i][j]) / P_Y_[j] * P_notX_[i])
-            I_X_[i] = tmp1 + tmp2
+                # tmp1 += P_XY_[i][j] * np.log2(float(P_XY_[i][j]) / P_Y_[j] * P_X_[i])
+                # tmp1 += P_notXY_[i][j] * np.log2(float(P_notXY_[i][j]) / P_Y_[j] * P_notX_[i])
+                tmp1 += P_Y_[j] * np.log2(P_Y_[j])
+                tmp2 += (P_XY_[i][j] / P_X_[i]) * np.log2(P_XY_[i][j] / P_X_[i])
+                tmp3 += (P_notXY_[i][j] / P_notX_[i]) * np.log2(P_notXY_[i][j] / P_notX_[i])
+            I_X_[i] = -tmp1 + P_X_[i] * tmp2 + P_notX_[i] * tmp3
         print("I_X_ shape:{}".format(I_X_.shape))
 
         output_file = open("./model_results/top_words.txt", "w")
