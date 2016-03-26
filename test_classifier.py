@@ -53,16 +53,16 @@ def test_classify():
     for prediction in predictions.tolist():
         print(int(prediction), file=test_f)
 
-#def test_confusion():
-#   print("\tTesting confusionmatrix()...")
-#    c = NaiveBayesClassifier()
-#    fname = DEFAULT_TEST_PATH + "test_classify.txt"
-#    print(c.accuracy(c.confusionmatrix()))
+def test_confusion():
+    print("\tTesting confusionmatrix()...")
+    c = NaiveBayesClassifier()
+    fname = DEFAULT_TEST_PATH + "test_classify.txt"
+    print(c.accuracy(c.confusionmatrix()))
 
 
 ##==-- Main --==##
-test_const_word_histograms()
-test_const_word_vectors()
-test_load_models()
+# test_const_word_histograms()
+# test_const_word_vectors()
+# test_load_models()
 test_classify()
-#test_confusion()
+test_confusion()

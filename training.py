@@ -20,10 +20,11 @@ class Trainer:
 
     def __init__(self,
                  datafile=DEFAULT_DATA_FILE,
-                 labelfile=DEFAULT_LABEL_FILE):
+                 labelfile=DEFAULT_LABEL_FILE,
+                 stop_words=False):
         self.datafile = datafile
         self.labelfile = labelfile
-        self.vocab = vb.Vocabulary()
+        self.vocab = vb.Vocabulary(stop_words=stop_words)
         self.newsgroups = ng.NewsGroups()
         self.num_docs = 0
         self.label_hist = defaultdict(int) #counts num docs labeled for each label.
@@ -110,6 +111,9 @@ class Trainer:
                 map_matrix[i,j] = \
                   ( input_matrix[i,j] + gamma ) / \
                   ( total_words[j] + (gamma*self.vocab.size) )
+        for word_id in self.vocab.stop_words_id_list:
+            for j in range(0, self.newsgroups.size):
+                map_matrix[word_id-1][j] = 0.00000000000001
 
         return map_matrix
 

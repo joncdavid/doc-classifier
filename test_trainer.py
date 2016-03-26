@@ -61,7 +61,24 @@ def test_train():
     mle_f.close()
     test_f.close()
 
+def test_stop_train():
+    print("\tTesting Trainer.train(stop_words=True)...")
+    t = Trainer(stop_words=True)
+    t.train()
+    MLE_vec, MAP_matrix = t.generate_model()
+
+    fname = DEFAULT_TEST_PATH + "test_generate_model.txt"
+    test_f = open(fname, "w")
+    mle_f = open(t.DEFAULT_MLE_FILENAME, 'r')
+    map_f = open(t.DEFAULT_MAP_FILENAME, 'r')
+    print("MLE:{} \n\nMAP:{}".format(mle_f, map_f),
+          file=test_f)
+    map_f.close()
+    mle_f.close()
+    test_f.close()
+
 ##==-- Main --==##
-test_calc_vector_MLE()
-test_calc_matrix_MAP()
-test_train()
+# test_calc_vector_MLE()
+# test_calc_matrix_MAP()
+# test_train()
+test_stop_train()

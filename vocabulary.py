@@ -8,14 +8,17 @@
 class Vocabulary:
     DEFAULT_VOCAB_FILE = "./data/vocabulary.txt"
 
-    def __init__(self, filename=None):
+    def __init__(self, filename=None, stop_words=False):
         """Initializes DocVocabulary."""
         self.filename = filename
+        self.stop_words = stop_words
         if not self.filename:
             self.filename = self.DEFAULT_VOCAB_FILE
         self.word_to_id_dict =  {}
         self.id_to_word_dict = {}
         self.size = 0
+        self.stop_words_list = []
+        self.stop_words_id_list = []
         self.load()
 
     def load(self, filename=None):
@@ -23,9 +26,18 @@ class Vocabulary:
         if not filename:
             filename = self.DEFAULT_VOCAB_FILE
         f = open(filename, 'r')
+        if self.stop_words:
+            swf = open("./data/stopwords.txt", "r")
+            word = swf.readline().strip()
+            while(word != ""):
+                self.stop_words_list.append(word)
+                word = swf.readline().strip()
         word_id = 1
         for line in f:
             word = line.strip().lower()
+            if self.stop_words:
+                if word in self.stop_words_list:
+                    self.stop_words_id_list.append(word_id)
             self.id_to_word_dict[word_id] = word
             self.word_to_id_dict[word] = word_id
             word_id += 1
