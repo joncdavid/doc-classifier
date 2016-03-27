@@ -75,14 +75,37 @@ The main features of the Naïve Bayes classifier are the MLE, MAP, and classific
 Our data necessitated the use of python’s numpy arrays to represent our calculated probabilities. By representing our data in this way, the classification function became a simple addition and matrix multiplication. Along with numpy arrays we also saved our MLE and MAP values to .model files, so we could capture these values and not have to retrain the system every time a classification was run.
 
 \subsection{Naive Bayes Training}
+
 Our design implemented a Trainer class that was in charge of reading in the data and labels and then creating the MLE and MAP models that our classifier uses. This class only has to train once to create the model files and those files are available for classification without having to be retrained. 
 
-The first function of training is to calculate the MLE of the training labels. The purpose of this is to determine the probability of any label appearing for an unknown document. This probability has nothing to do with what words are associated with what labels, just the rate at which labels appear in the training set. {MLE EQUATION AND/OR PSUEDO-CODE FOR MLE FUNCTION}
+The first function of training is to calculate the MLE of the training labels. The purpose of this is to determine the probability of any label appearing for an unknown document. This probability has nothing to do with what words are associated with what labels, just the rate at which labels appear in the training set. The MLE equation is defined in \ref{eq:mle}
 
-The second function of training is to determine the MAP of the attributes of the training set. The MAP function allows you to adjust your results to either more resemble what you found in the training set, or to a prior estimation that you can set through the beta value. This beta value is very important, it makes it possible to classify with attributes that you may not have seen for any class before. Usually if you see an attribute that has never been seen belonging to a class, the probability of the unknown class equaling that class will now be zero, but by using the prior beta value instead of zeroing out the probability you can just set it to something small. Since chances are high that classifying combinations of attributes that were not present in the training set, having a beta protects you from having a classification saying there is a zero percent chance of the attributes belonging to any class. {EQUATION/PUESDO-CODE FOR MAP STUFF}
+\begin{equation}
+\label{eq:mle}
+P(Y_k) = \dfrac{number.of.documents.labeled. Y_k}{total.number.of.documents}
+\end{equation}
+
+The second function of training is to determine the MAP of the attributes of the training set. The MAP function allows you to adjust your results to either more resemble what you found in the training set, or to a prior estimation that you can set through the beta value. This beta value is very important, it makes it possible to classify with attributes that you may not have seen for any class before. Usually if you see an attribute that has never been seen belonging to a class, the probability of the unknown class equaling that class will now be zero, but by using the prior beta value instead of zeroing out the probability you can just set it to something small. Since chances are high that classifying combinations of attributes that were not present in the training set, having a beta protects you from having a classification saying there is a zero percent chance of the attributes belonging to any class.
+
+The MAP equation is defined in Figure \ref{eq:map}.
+
+\begin{equation}
+\label{eq:map}
+P(X_i|Y_k) = \dfrac{(count.of. X_i .in. Y_k) + (\alpha-1)}{(words.in. Y_k) + ((\alpha-1)(length.of.vocab))}
+\end{equation}
+
+Where $\alpha=1+\beta$.
 
 \subsection{Naive Bayes Classification}
-We implemented a NaiveBayesClassifier class that was able to use the MLE and MAP from the trainer to do the calculations needed to classify new data. The classifier writes its classifications to a text file in order to be compared to the truth data for the determination of accuracy. 
+We implemented a NaiveBayesClassifier class that was able to use the MLE and MAP from the trainer to do the calculations needed to classify new data. The classifier writes its classifications to a text file in order to be compared to the truth data for the determination of accuracy. We use Equation \ref{eq:classify} to classify words as belonging to one of the newsgroups.
+
+\begin{equation}
+\label{eq:classify}
+Y_{new} = argmax(log_2(\overrightarrow{a}) + \overrightarrow{b} \times log_2(C))
+\end{equation}
+
+Where $\overrightarrow{a}$ is an MLE vector, $\overrightarrow{b}$ is a vector of new words to classify, and $C$ is a matrix produced by calculating MAP over the set of pairs of all words and newsgroups.
+
 
 \subsection{Confuion Matrix and Accuracy}
 A confusion matrix is useful for visualizing the results of classification. Accuracy can also be determined from the confusion matrix. We created a ConfusionMatrix class that can read the predicted values that the classifier determined, and the true values from the data set and then increments an element in the confusion matrix associated with those values. For example, if the predicted label was 4 and the true label was 5, the element indexed by [4][5] would be incremented. It follows that elements lying along the diagonal are all accurate predictions while elements off of the diagonal are incorrect. By totaling the values along the diagonal and dividing by the sum of all the values in the matrix the total accuracy of the predictions can be found. 
@@ -94,12 +117,6 @@ To help with the other parts of the program, we added some utility classes. The 
 This section contains misc. stuff we might to copy/modify later if we want to use equations, algorithms, and tables.
 
 MAKE SURE THIS SECTION GETS DELETED BEFORE SUBMITTING
-
-\begin{equation}
-\label{entropy-equation}
-Entropy(S) = \sum_{v\in val(A)}-p_ilog_2(p_i)
-\end{equation}
-
 
 \begin{algorithm}
 \caption{calculate information gain($A$, $S$)}
@@ -120,15 +137,26 @@ Entropy(S) = \sum_{v\in val(A)}-p_ilog_2(p_i)
 
 
 \section{Experiments}
-Talk about the experiments in general...
-
 \subsection{Data}
-Talk about the data in detail...
+To classify text documents, both training and test files are provided. Definition files are also provided.
+
+\subsubsection{Definition Files}
+The vocabulary.txt is a definition file that defines that set of all words that appear in the data set. It is a simple text file where each line represents a word, whose word ID is the line number in that file. The newsgroups.txt file is a definition file that defines the set of all news groups that appear in the data set. It is a simple text file where each line represents a news group, whose news group ID is the line number in that file.
+
+\subsubsection{Data Files}
+There are two data files: train.data, and test.data. The train.data file is used for training the model and the test.data file is used to evaluate the performance and accuracy of the model. Both files have the same format. These are text files where each line consists of a document ID, word ID, and word count. Each line represents the number of instances a particular word appears in a particular document. This means the word counts for each word in a document are distributed throughout multiple lines.
+
+\subsubsection{Label Files}
+There are two label files: train.label, and test.label. The train.label file is used for training the model and the test.data file is used to evaluate the performance accuracy of the model. Both files have the same format. These are text files where each line consists of a single integer representing a newsgroup ID. The line number represents the document ID. The file is a mapping between document IDs and news group IDs. For each line, the document is classified as a type of news group.
+
 
 \subsection{Methods}
-Talk about the methods in detail...
+Naive Bayes classifiers are built by calculating the maximum likelihood estimate (MLE), and the maximum a priori (MAP). This calculation is described in the implementation section. This experiment builds several naive bayes classifier models with various settings: (1) various beta-value in the range [0.00001, 1.0], and (2) stop-word inclusion or exclusion. [Hmm include a sentence that explains what the beta-value is and what it's for?]
+
+Ten models of various beta values are generated and their performance is compared against each other. Two models using the same beta value, but differing only in the inclusion or exclusion of stop-words, are also generated and compared against each other.
 
 \subsection{Results}
+\subsubsection{The effects of various beta-values}
 
 \begin{figure}
   \includegraphics[width=0.5\textwidth, natwidth=80,natheight=80]{betavsacc.png}
@@ -136,38 +164,16 @@ Talk about the methods in detail...
   \label{fig:betavsacc}
 \end{figure}
 
-Figure \ref{fig:betavsacc} shows performance of Naive Bayes Classifier over different values of beta.
+Figure \ref{fig:betavsacc} shows performance of Naive Bayes Classifier over different values of beta. For small values of beta (0.00001), the accuracy is less than .785. As beta values increase, accuracy increases until reaching beta value of around 0.1. At beta value 0.1, accuracy peaks at 0.80. From this point, any increase in beta rapidly decreases accuracy. At beta value of 1.0, accuracy drops below 0.785.
 
-Talk about the results in general...
+This behavior may be explained by analyzing $\beta$'s rule in Equation \ref{eq:map}, the MAP equation. Looking at the $\beta$-value in the MAP equation, we can see that for small counts of $X_i$, $\beta$ becomes significant. For small counts of $X_i$, if we decrease $\beta$ the numerator becomes very small, as seen in Figure \ref{fig:betavsacc}. Similarly, when $\beta$ approaches 1.0, $\beta$ plays a larger role in the denominator. This is because as $\beta$ increases, the denominator increases more rapidly than the numerator. When the denominator is much larger than the numerator, result is a very small number. As seen in Figure \ref{fig:betavsacc}, when $\beta$ approaches 1.0 accuracy drops significantly.
 
-This is how you do a confusion matrix, update it before submitting.
-\begin{table}[ht]
-  \caption{Confusion Matrix}
-  \centering
-  \begin{tabular}{c c c }
-  \hline\hline
-                & Predicted num(p) & Predicted num(e) \\ [0.5ex]
-  %heading
-  \hline
-  Actual num(p) &              985 &                0 \\
-  Actual num(e) &                0 &             1048 \\ [1ex]
-  \hline
-  \end{tabular}
-  \label{table:nonlin}
-\end{table}
+Two models with the same beta-value are also compared. One model diminishes the weight of English stop-words, and the other treats English stop-words the same as every other word in the vocabulary. The model that diminishes the weight of English stop-words produces an accuracy of 0.80 over the test set. The other model produces an accuracy of 0.78 over the test set. [So what? what is the significance of that?]
 
-A confusion matrix is more descriptive of a model's performance than
-accuracy. A confusion matrix shows the number of true positives (TP), true
-negatives (TN), false positives (FP), and false negatives (FN). From this accuracy
-and misclassification can be calculated. Accuracy is (TP+TN/p+e) and
-Misclassification is 1.0-Accuracy.
+Table \ref{table:confmatrix} is the confusion matrix produced for generated model with beta-value 0.1, excluding stop-words. The confusion matrix is a useful tool to help visualize what types of errors occur in the model. The confusion matrix's two axis are the predicted labels(columns), and actual labels(rows). The number in each cell[x][y] represents the number of times a prediction y was made when the true value was x. The main diagonal represents the correct prediction. All other values outside the main diagonal represent incorrect prediction.
 
-In contrast, when evaluating the model over a validation set the label
-is not given. The only information provided is accuracy. The table
-below shows the classification accuracy of each model over the
-validation set.
+The first two, and possible third, columns of this confusion matrix produce more errors than the other columns. Column one represents the prediction of the alt.atheism newsgroup, column two represents the prediction of the comp.graphics newsgroup, and column three represents the prediction of comp.os.ms-windows.misc.
 
-PUT BETA VS ACCURACY TABLE HERE
 
 \section{Discussion}
 Introduce discussion...
@@ -178,72 +184,47 @@ Comparison...
 \subsection{Explanation of Results}
 Explanation...
 
-\subsection{Questions and Answers}
-This section answers questions.
-
 %% Question 1
-\subsubsection{Explain why it would be difficult to accurately estimate the parameters of this model on a reasonable set of documents.}
-The model given is: $(P(Y|X_1 .. X_d) proportional-to P(X_1..d|Y)*P(Y) = P(Y)*PRODUCT(P(X_i|Y)).$
+\subsection{Explain why it would be difficult to accurately estimate the parameters of this model on a reasonable set of documents.}
+The model given is:
+
+\begin{equation}
+\label{entropy-equation}
+(P(Y|X_1 .. X_d) \propto P(X_1..X_d|Y)*P(Y) = P(Y)*\prod(P(X_i|Y))
+\end{equation}
+
 It would be difficult to accurately estimate the parameters of this model on a reasonable set of documents because there are too many (how many?) parameters. For larget data sets estimating the parameters of this model becomes intractable.
 Answers go here.
 
 % %% Question 2
-% \subsubsection{Report your overall testing accuracy and print out the confusion matrix}
-% The accuracy is 80%
-% This is what the confusion matrix looks like:
-
-% \begin{table}[ht]
-%   \caption{Confusion Matrix}
-%   \centering
-%   \begin{tabular}{c c c }
-%   \hline\hline
-%            & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16 & 17 & 18 & 19 & 20\\ [0.5ex]
-%   %heading
-%   \hline
-%   Act.   1 & a & 3 & 4 & 5              985 &                0 \\
-%   Act.   1 & a & 3 & 4 & 5              985 &                0 \\
-%   Act.   1 & a & 3 & 4 & 5              985 &                0 \\
-%   Act.   1 & a & 3 & 4 & 5              985 &                0 \\
-%   Act.   1 & a & 3 & 4 & 5              985 &                0 \\
-%   Act.   1 & a & 3 & 4 & 5              985 &                0 \\
-%   Act.   1 & a & 3 & 4 & 5              985 &                0 \\
-%   Act.   1 & a & 3 & 4 & 5              985 &                0 \\
-%   Act.   1 & a & 3 & 4 & 5              985 &                0 \\
-%   Act.  10 & a & 3 & 4 & 5              985 &                0 \\
-%   Act.  11 & a & 3 & 4 & 5              985 &                0 \\
-%   Act.  12 & a & 3 & 4 & 5              985 &                0 \\
-%   Act.  13 & a & 3 & 4 & 5              985 &                0 \\
-%   Act.  14 & a & 3 & 4 & 5              985 &                0 \\
-%   Act.  15 & a & 3 & 4 & 5              985 &                0 \\
-%   Act.  16 & a & 3 & 4 & 5              985 &                0 \\
-%   Act.  17 & a & 3 & 4 & 5              985 &                0 \\
-%   Act.  18 & a & 3 & 4 & 5              985 &                0 \\
-%   Act.  19 & a & 3 & 4 & 5              985 &                0 \\
-%   Act.  20 & a & 3 & 4 & 5              985 &                0 \\
-%   \hline
-%   \end{tabular}
-%   \label{table:nonlin}
-% \end{table}
-
+\subsection{Report your overall testing accuracy and print out the confusion matrix}
+The accuracy for our model with beta-value $\dfrac{1}{size(V)}$ is 0.785. This confusion matrix can be found in Table \ref{table:confmatrix} in the Appendix. It is in the Appendix because the table is too large to fit in a two-column page.
 
 %% Question 3
-\subsubsection{Are there any newsgroups that the algorithm confuses more often than others? Why do you think this is?}
+\subsection{Are there any newsgroups that the algorithm confuses more often than others? Why do you think this is?}
 asdf
 
 %% Question 4
-\subsubsection{Retrain your Naive Bayes classifier for values of beta between 0.00001 and 1 and report the accuracy over the test set for each value of B. Create a plot with values of beta on the x-axis and accuracy on the y-axis. Use a logarithmic scale for the x-axis. Explain in a few sentences why accuracy drops for both small and large values of beta.}
-Answers go here.
+\subsection{Retrain your Naive Bayes classifier for values of beta between 0.00001 and 1 and report the accuracy over the test set for each value of B. Create a plot with values of beta on the x-axis and accuracy on the y-axis. Use a logarithmic scale for the x-axis. Explain in a few sentences why accuracy drops for both small and large values of beta.}
+The naive bayes classifier models with beta-values ranging from 0.00001 and 1.0 produce accuracies, over the test set, shown in Figure \ref{fig:betavsacc}.
+
+Figure \ref{fig:betavsacc} shows performance of Naive Bayes Classifier over different values of beta. For small values of beta (0.00001), the accuracy is less than .785. As beta values increase, accuracy increases until reaching beta value of around 0.1. At beta value 0.1, accuracy peaks at 0.80. From this point, any increase in beta rapidly decreases accuracy. At beta value of 1.0, accuracy drops below 0.785.
+
+
+This behavior may be explained by analyzing $\beta$'s rule in Equation \ref{eq:map}, the MAP equation. Looking at the $\beta$-value in the MAP equation, we can see that for small counts of $X_i$, $\beta$ becomes significant. For small counts of $X_i$, if we decrease $\beta$ the numerator becomes very small, as seen in Figure \ref{fig:betavsacc}. Similarly, when $\beta$ approaches 1.0, $\beta$ plays a larger role in the denominator. This is because as $\beta$ increases, the denominator increases more rapidly than the numerator. When the denominator is much larger than the numerator, result is a very small number. As seen in Figure \ref{fig:betavsacc}, when $\beta$ approaches 1.0 accuracy drops significantly.
+
+
 
 %% Question 5
-\subsubsection{Propose a method for ranking the words in the dataset based on how much the classifier 'relies on' them when performing its classification. It should give high schores to those words that appear frequently in one or a few of the newsgroups but not in other ones. Words that are used frequently in general English should have lower scores, as well as words that only appear extremely rarely throughout the whole dataset.}
+\subsection{Propose a method for ranking the words in the dataset based on how much the classifier 'relies on' them when performing its classification. It should give high schores to those words that appear frequently in one or a few of the newsgroups but not in other ones. Words that are used frequently in general English should have lower scores, as well as words that only appear extremely rarely throughout the whole dataset.}
 Answers go here.
 
 %% Question 6
-\subsubsection{Implement your method, set beta back to 1/|V| and print out the 100 words with the highest measure.}
+\subsection{Implement your method, set beta back to 1/|V| and print out the 100 words with the highest measure.}
 Answers go here.
 
 %% Question 7
-\subsubsection{If the points in the training dataset were not sampled independently at random from the same distribution of data we plan to classify in the future, we might call that training set biased. Dataset bias is a problem because the performance of a classifier on a biased dataset will not accurately reflect its future performance in the real world. Look again at the words your classifier is 'relying on'. Do you see any signs of dataset bias?}
+\subsection{If the points in the training dataset were not sampled independently at random from the same distribution of data we plan to classify in the future, we might call that training set biased. Dataset bias is a problem because the performance of a classifier on a biased dataset will not accurately reflect its future performance in the real world. Look again at the words your classifier is 'relying on'. Do you see any signs of dataset bias?}
 Answers go here.
 
 \section{Conclusions}
@@ -254,6 +235,45 @@ Hello, conclusions.
 \newpage
 \onecolumn
 \appendix
+\section{Confusion Matrix}
+
+A confusion matrix is more descriptive of a model's performance than accuracy. A confusion matrix shows the number of true positives (TP), true negatives (TN), false positives (FP), and false negatives (FN). From this accuracy and misclassification can be calculated. Accuracy is (TP+TN/p+e) and Misclassification is 1.0-Accuracy.
+
+\begin{table}[ht]
+  \caption{Confusion Matrix}
+  \centering
+  \begin{tabular}{c c c }
+   \hline\hline
+%   . &   1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16 & 17 & 18 & 19 & 20\\ [0.5ex]
+%   %heading
+%   \hline
+%   1 & 254 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 1 & 0 &               985 &                0 \\
+%   2 & a & 3 & 4 & 5              985 &                0 \\
+   
+
+%   \hline
+%   \end{tabular}
+%   \label{table:nonlin}
+% \end{table}
+
+
+% \begin{table}[ht]
+%   \caption{Confusion Matrix}
+%   \centering
+%   \begin{tabular}{c c c }
+%   \hline\hline
+%                 & Predicted num(p) & Predicted num(e) \\ [0.5ex]
+%   %heading
+%   \hline
+%   Actual num(p) &              985 &                0 \\
+%   Actual num(e) &                0 &             1048 \\ [1ex]
+%   \hline
+  \end{tabular}
+  \label{table:confmatrix}
+\end{table}
+
+\newpage
+\onecolumn
 \section{Mapping between words and word IDs}
 Here are some of the more significant words and their word IDs.
 
