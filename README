@@ -1,0 +1,119 @@
+===========================================================
+README
+-----------------------------------------------------------
+Jon David and Jarrett Decker
+===========================================================
+
+
+Table of Contents
+-----------------------------------------------------------
++ Description
++ Instructions for use
++ File manifest
++ References
+
+
+===========================================================
+Description
+-----------------------------------------------------------
+This project  builds  naive bayes classifiers that classify
+text documents read from various newsgroup articles.
+
+
+
+===========================================================
+Instructions for use
+-----------------------------------------------------------
+Uncompress and untar
+
+  run: gunzip jdavid-jdecker-submit-me.tar.gz
+       tar xvf jdavid-jdecker-submit-me.tar
+
+---- OPTION #1 --------------------------------------------
+To build one model (with beta=1/|V|):
+
+  run: make build
+
+---- OPTION #2 --------------------------------------------
+  WARNING! WARNING! WARNING! WARNING! WARNING! WARNING!
+this option takes a long time to build, just
+because of the nature of computation.
+
+To build all beta models:
+
+  run: make build_betas
+
+---- OUTPUT -----------------------------------------------
+
+This should generate files in these directories:
++ ./models/
+     map.model*  may end with .beta.0.* if building betas
+     mle.model*  may end with .beta.0.* if building betas
+     evidence.model           may end with .beta.0.* ...
++ ./model_predictions/
+     model.prediction*         may end with .beta.0.* ...
++ ./model_results/
+     model.accuracy*           may end with .beta.0.* ...
+     model.confusion_matrix*   may end with .beta.0.* ...
+     
+
+===========================================================
+File manifest
+-----------------------------------------------------------
+Data files in ./data/
+ + train.data
+ + train.label
+ + test.data
+ + test.label
+ + vocabulary.txt
+ + newsgrouplabels.txt
+ + stopwords.txt
+
+Resulting output files in  ./models/
+     map.model*  may end with .beta.0.* if building betas
+     mle.model*  may end with .beta.0.* if building betas
+     evidence.model           may end with .beta.0.* ...
+     
+Resulting output files in ./model_predictions/
+     model.prediction*         may end with .beta.0.* ...
+     
+Resulting output files in ./model_results/
+     model.accuracy*           may end with .beta.0.* ...
+     model.confusion_matrix*   may end with .beta.0.* ...
+
+Report file in ./report
+ + jdavid-jdecker-nb-text-classifier.pdf
+
+Project files
+ + train.py
+ + vocabulary.py
+ + newsgroups.py
+ + classifier.py
+ + confusionmatrix.py
+ + stopwords.py
+
+Automation scripts
+ + Makefile
+ + Makefile.betas
+ + build_models.py
+ + build_plot.py
+ + build_predictions.py
+ + build_ranks.py
+ + build_results.py
+ + simple_build_model.sh
+ + simple_build_plot.sh
+ + simple_build_prediction.sh
+ + simple_build_rank.sh
+ + simple_build_result.sh
+
+Configuration and utility files
+ + README
+
+
+===========================================================
+References
+-----------------------------------------------------------
+[1] Y. Yang and Y.O.Pedersen, "A comparative study on
+    feature selection in text categorization," in ICML,
+    vol. 97, 1997, pp. 412-420.
+
