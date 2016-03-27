@@ -11,6 +11,7 @@ model_results/*.data*
 model_results/*.png
 report/*.aux
 report/*.bbl
+report/*.blg
 report/*blx.bib
 report/*dvi
 report/*log
