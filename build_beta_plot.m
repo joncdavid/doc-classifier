@@ -1,4 +1,4 @@
-#!/usr/bin/env octave
+#!/usr/bin/env octave -qf
 # filename: build_beta_plot.m
 # authors: Jon David and Jarrett Decker
 # description:

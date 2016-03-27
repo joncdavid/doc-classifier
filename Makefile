@@ -77,6 +77,7 @@ build_result:
 
 build_beta_results:
 	time make -f Makefile.betas build_beta_results
+	time ./simple_build_plot.sh
 
 
 ####====---- test section ----=================================================
