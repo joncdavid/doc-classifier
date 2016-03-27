@@ -7,6 +7,9 @@
 %%
 %% Package algpseudocode and algorithm need to be installed. Try:
 %%   sudo apt-get install texlive-science
+%%
+%% Adding graphics to LaTeX document:
+%%   https://www.sharelatex.com/learn/Inserting_Images
 
 
 \documentclass{IEEEtran}
@@ -16,14 +19,17 @@
 \usepackage{amsmath}
 \usepackage{algpseudocode}
 \usepackage{algorithm}
+\usepackage{graphicx}
 %%\usepackage{appendix}
 
+%% Tell LaTeX where the images are located
+\graphicspath{ {figures/} }
 
 \hypersetup{hidelinks}
 
 %%% ADD RELEVANT REFERENCES HERE %%%
-\addbibresource{quinlan1986.bib}
-\addbibresource{schlimmer1981.bib}
+%\addbibresource{quinlan1986.bib}
+%\addbibresource{schlimmer1981.bib}
 \addbibresource{mitchell1997.bib}
 
 
@@ -123,6 +129,15 @@ Talk about the data in detail...
 Talk about the methods in detail...
 
 \subsection{Results}
+
+\begin{figure}
+  \includegraphics[width=0.5\textwidth, natwidth=80,natheight=80]{betavsacc.png}
+  \caption{Performance of classifier with different beta-values}
+  \label{fig:betavsacc}
+\end{figure}
+
+Figure \ref{fig:betavsacc} shows performance of Naive Bayes Classifier over different values of beta.
+
 Talk about the results in general...
 
 This is how you do a confusion matrix, update it before submitting.
@@ -166,24 +181,68 @@ Explanation...
 \subsection{Questions and Answers}
 This section answers questions.
 
+%% Question 1
 \subsubsection{Explain why it would be difficult to accurately estimate the parameters of this model on a reasonable set of documents.}
+The model given is: $(P(Y|X_1 .. X_d) proportional-to P(X_1..d|Y)*P(Y) = P(Y)*PRODUCT(P(X_i|Y)).$
+It would be difficult to accurately estimate the parameters of this model on a reasonable set of documents because there are too many (how many?) parameters. For larget data sets estimating the parameters of this model becomes intractable.
 Answers go here.
 
-\subsubsection{Report your overall testing accuracy and print out the confusion matrix}
-Answers go here.
+% %% Question 2
+% \subsubsection{Report your overall testing accuracy and print out the confusion matrix}
+% The accuracy is 80%
+% This is what the confusion matrix looks like:
 
+% \begin{table}[ht]
+%   \caption{Confusion Matrix}
+%   \centering
+%   \begin{tabular}{c c c }
+%   \hline\hline
+%            & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16 & 17 & 18 & 19 & 20\\ [0.5ex]
+%   %heading
+%   \hline
+%   Act.   1 & a & 3 & 4 & 5              985 &                0 \\
+%   Act.   1 & a & 3 & 4 & 5              985 &                0 \\
+%   Act.   1 & a & 3 & 4 & 5              985 &                0 \\
+%   Act.   1 & a & 3 & 4 & 5              985 &                0 \\
+%   Act.   1 & a & 3 & 4 & 5              985 &                0 \\
+%   Act.   1 & a & 3 & 4 & 5              985 &                0 \\
+%   Act.   1 & a & 3 & 4 & 5              985 &                0 \\
+%   Act.   1 & a & 3 & 4 & 5              985 &                0 \\
+%   Act.   1 & a & 3 & 4 & 5              985 &                0 \\
+%   Act.  10 & a & 3 & 4 & 5              985 &                0 \\
+%   Act.  11 & a & 3 & 4 & 5              985 &                0 \\
+%   Act.  12 & a & 3 & 4 & 5              985 &                0 \\
+%   Act.  13 & a & 3 & 4 & 5              985 &                0 \\
+%   Act.  14 & a & 3 & 4 & 5              985 &                0 \\
+%   Act.  15 & a & 3 & 4 & 5              985 &                0 \\
+%   Act.  16 & a & 3 & 4 & 5              985 &                0 \\
+%   Act.  17 & a & 3 & 4 & 5              985 &                0 \\
+%   Act.  18 & a & 3 & 4 & 5              985 &                0 \\
+%   Act.  19 & a & 3 & 4 & 5              985 &                0 \\
+%   Act.  20 & a & 3 & 4 & 5              985 &                0 \\
+%   \hline
+%   \end{tabular}
+%   \label{table:nonlin}
+% \end{table}
+
+
+%% Question 3
 \subsubsection{Are there any newsgroups that the algorithm confuses more often than others? Why do you think this is?}
-Answers go here.
+asdf
 
+%% Question 4
 \subsubsection{Retrain your Naive Bayes classifier for values of beta between 0.00001 and 1 and report the accuracy over the test set for each value of B. Create a plot with values of beta on the x-axis and accuracy on the y-axis. Use a logarithmic scale for the x-axis. Explain in a few sentences why accuracy drops for both small and large values of beta.}
 Answers go here.
 
+%% Question 5
 \subsubsection{Propose a method for ranking the words in the dataset based on how much the classifier 'relies on' them when performing its classification. It should give high schores to those words that appear frequently in one or a few of the newsgroups but not in other ones. Words that are used frequently in general English should have lower scores, as well as words that only appear extremely rarely throughout the whole dataset.}
 Answers go here.
 
+%% Question 6
 \subsubsection{Implement your method, set beta back to 1/|V| and print out the 100 words with the highest measure.}
 Answers go here.
 
+%% Question 7
 \subsubsection{If the points in the training dataset were not sampled independently at random from the same distribution of data we plan to classify in the future, we might call that training set biased. Dataset bias is a problem because the performance of a classifier on a biased dataset will not accurately reflect its future performance in the real world. Look again at the words your classifier is 'relying on'. Do you see any signs of dataset bias?}
 Answers go here.
 
@@ -195,9 +254,25 @@ Hello, conclusions.
 \newpage
 \onecolumn
 \appendix
-\section{Classification Rules}
-do we need an appendix section?  If we don't use it, make sure to delete it before submitting
-Ex
+\section{Mapping between words and word IDs}
+Here are some of the more significant words and their word IDs.
+
+\begin{table}[ht]
+  \caption{Selected Word ID and Word mapping}
+  \centering
+  \begin{tabular}{c c c }
+  \hline\hline
+                &         Word \\ [0.5ex]
+  %heading
+  \hline
+              1 &            a \\
+              2 &           an \\ [1ex]
+              3 &          the \\ [1ex]
+  \hline
+  \end{tabular}
+  \label{table:nonlin}
+\end{table}
+
 
 
 \end{document}
