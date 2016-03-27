@@ -31,6 +31,7 @@
 %\addbibresource{quinlan1986.bib}
 %\addbibresource{schlimmer1981.bib}
 \addbibresource{mitchell1997.bib}
+\addbibresource{yang1999.bib}
 
 
 
@@ -51,13 +52,7 @@
 \maketitle
 
 \begin{abstract}
-
-Abstract goes here. Do we really need an abstract?
-
-Keep this example here so we know how to cite references \parencite{mitchell1997machine}.
-
-Keep this here so we know how to do embedded math \LaTeX like $\mathcal{O}(log_{v}n)$
-where $v$ is blah blah blah.
+This report describes how we trained a Naive Bayes classifier to classify words in newsgroup articles, experiments over various settings, and results. We also discuss some natural questions that arise from such experiments.
 \end{abstract}
 
 
@@ -112,29 +107,6 @@ A confusion matrix is useful for visualizing the results of classification. Accu
 
 \subsection{Utility Clases}
 To help with the other parts of the program, we added some utility classes. The Vocabulary class was used to store all possible words in our vocabulary and was capable of producing words associated with word IDs and vice versa. The NewsGroups class was similar, except instead of storing information about the words, it stored information about the possible labels, including the size of the set of labels and the names and IDs.
-
-\subsection{Misc. \LaTeX code}
-This section contains misc. stuff we might to copy/modify later if we want to use equations, algorithms, and tables.
-
-MAKE SURE THIS SECTION GETS DELETED BEFORE SUBMITTING
-
-\begin{algorithm}
-\caption{calculate information gain($A$, $S$)}
-\begin{algorithmic}
-\Statex\Comment{ \%Input: attribute A, dataset S\%}
-\State $entropybefore$ $\leftarrow$ Entropy($S$)
-\State $entropyafter$ $\leftarrow$ 0.0
-\For{$v$ $\in$ vals($A$)}
-  \State Let $S_v$ $\subseteq$ $S$, such that $S$[$A$] = $v$
-  \State $localentropy$ $\leftarrow$ $\frac{|S_v|}{|S|}$ $\times$ Entropy($S_v$)
-  \State $entropyafter$ $\leftarrow$ $entropyafter$ + $localentropy$
-\EndFor
-
-\State $gain$ $\leftarrow$ $entropybefore$ - $entropyafter$
-\State return $gain$
-\end{algorithmic}
-\end{algorithm}
-
 
 \section{Experiments}
 \subsection{Data}
@@ -228,18 +200,23 @@ This behavior may be explained by analyzing $\beta$'s rule in Equation \ref{eq:m
 
 %% Question 5
 \subsection{Propose a method for ranking the words in the dataset based on how much the classifier 'relies on' them when performing its classification. It should give high schores to those words that appear frequently in one or a few of the newsgroups but not in other ones. Words that are used frequently in general English should have lower scores, as well as words that only appear extremely rarely throughout the whole dataset.}
-Answers go here.
+
+In \parencite{yang1997comparative}, Yang compares several methods on feature selection in text configuration. We use one of his methods for word ranking. In text classification, information gain is a natural way to perform feature selection. Using only our MLE and MAP values we were able to implement the information gain formula. Equation \ref{eq:infogain} can be found in Appendix D. It is too long to fit in two a two column page.
+
+For info gain as well as the equations saying P(X,Y) = P(X|Y)P(Y), P(X) = sum over Y(P(X,Y)), and that MAP = P(X|Y), MLE = P(Y)
+
+By applying this to our vocabulary we were able to get information gain values for every word. We then removed certain “stop words” by setting those words information gain to 0. If we didn’t do this, there were a number of words that occur regularly in all documents, such as “a” and “the” that appears to be a top word. After removing those words the top k values could then be found and listed as a ranked list of words.
+
 
 %% Question 6
-\subsection{Implement your method, set beta back to 1/|V| and print out the 100 words with the highest measure.}
-Answers go here.
+\subsection{Implement your method, set beta back to $\dfrac{1}{V}$ and print out the 100 words with the highest measure.}
+The Top 100 words can be found in Appendix C at the end of this document. But the top ten are windows, god, scsi, car, drive, space, team, dos, bike, file. But for the full 100 go to Appendix C.
 
 %% Question 7
 \subsection{If the points in the training dataset were not sampled independently at random from the same distribution of data we plan to classify in the future, we might call that training set biased. Dataset bias is a problem because the performance of a classifier on a biased dataset will not accurately reflect its future performance in the real world. Look again at the words your classifier is 'relying on'. Do you see any signs of dataset bias?}
-Answers go here.
+A number of the religious words in the top 100 list appear to be biased towards western religions. Christ, Jesus, Jew, bible, and Christians, all appear on the list, but other religions terms do not. This is possibly because most English speaking countries are either Christian or Jewish majorities. It might be difficult for this classifier to classify documents about other, non-western, types of religions. The solution to these types of data set problems is usually to gather more data from the space that you’re trying to classify in.
+  
 
-\section{Conclusions}
-Hello, conclusions.
 
 \printbibliography
 
@@ -320,8 +297,6 @@ A confusion matrix is more descriptive of a model's performance than accuracy. A
 \end{table}
 
 
-
-\twocolumn
 \subsection{Top 100 Words}
 \textbf{Top 100 Words:}
   windows,
@@ -425,6 +400,13 @@ A confusion matrix is more descriptive of a model's performance than accuracy. A
   version,
   mail,
 
+\subsection{Information Gain Equation}
+\begin{equation}
+\label{eq:infogain}
+G(t) = -\sum_{i=1}P(c_i)P(c_i)
++ P(t)\sum_{i=1}P(c_i|t)log P(c_i|t)
++ P(\bar(t))\sum_{i=1}P(c_i|\bar(t))log P(c_i|t)
+\end{equation}
 
 
 \end{document}
